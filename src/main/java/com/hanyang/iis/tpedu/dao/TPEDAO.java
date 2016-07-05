@@ -1,4 +1,4 @@
-package com.hanyang.iis.dao;
+package com.hanyang.iis.tpedu.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.hanyang.iis.tpedu.dto.Score;
 import com.hanyang.iis.utils.*;
 
 public class TPEDAO {
@@ -30,4 +31,5 @@ public class TPEDAO {
 		
 		return datas;
 	}
+	
 }

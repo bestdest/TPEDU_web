@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.hanyang.iis.tpedu.dto.Score;
+import com.hanyang.iis.tpedu.dto.Sentence;
 import com.opencsv.CSVReader;
 
 
@@ -122,6 +124,57 @@ public class TrainingDataSelect {
 				try {conn.close();} catch (Exception e) {}
 		}
 
+		return list;
+	}
+	
+	public ArrayList<Sentence> selectRandomSentence_essay(String grade, int limit) {
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		PreparedStatement psmt2 = null;
+		ResultSet rs = null;
+		
+		ArrayList<Sentence> list = new ArrayList<Sentence>();
+		String sql = "select * from (  select case when grade=0 then 0 when grade=1 then 0"
+				+ "		  when grade=2 then 1  when grade=3 then 2 end as grade, "
+				+ "		  `id`, `lang`,  `type`,  `cnt_advp`,  `cnt_adjp`,  `length`,  `word`,  `voca_score`,  `pattern_score`,  `etc` "
+				+ "    from tbl_essay_sen_set3 )x where grade in(?) order by rand() limit ?;";
+		
+		try {
+			conn = DriverManager.getConnection("jdbc:mysql://166.104.140.75:60000/TPE_EDU", "root", "iislabkey");
+			psmt = conn.prepareStatement(sql.toString());
+			psmt.setString(1, grade);
+			psmt.setLong(2, limit);
+			rs = psmt.executeQuery();
+			
+			while (rs.next()) {
+				Sentence sentence = new Sentence();
+				
+				sentence.setCnt_adjp(rs.getDouble("cnt_adjp"));
+				sentence.setCnt_advp(rs.getDouble("cnt_advp"));
+				sentence.setLength(rs.getDouble("length"));
+				sentence.setVoca_score(rs.getDouble("voca_score"));
+				//sentence.setVoca_score_sum(rs.getDouble("voca_score_sum"));
+				sentence.setPattern_score(rs.getDouble("pattern_score"));
+				sentence.setWord(rs.getDouble("word"));
+				sentence.setStruct_type(rs.getDouble("type"));
+				sentence.setGrade(rs.getInt("grade"));
+				
+				list.add(sentence);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null)
+				try {rs.close();} catch (Exception e) {}
+			if (psmt != null)
+				try {psmt.close();} catch (Exception e) {}
+			if (psmt2 != null)
+				try {psmt2.close();} catch (Exception e) {}
+			if (conn != null)
+				try {conn.close();} catch (Exception e) {}
+		}
+		
 		return list;
 	}
 	

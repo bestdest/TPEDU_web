@@ -1,4 +1,4 @@
-package com.hanyang.iis.dao;
+package com.hanyang.iis.tpedu.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.hanyang.iis.Score;
-import com.hanyang.iis.Sentence;
 import com.hanyang.iis.TrainingDataSelect;
+import com.hanyang.iis.tpedu.dto.Score;
+import com.hanyang.iis.tpedu.dto.Sentence;
 
 public class NaiveBayesianDAO {
 	
@@ -353,7 +353,7 @@ public class NaiveBayesianDAO {
 	   	return Math.sqrt(result);
    	}
    
-   	/* Sentence Score */
+   	/* Sentence Score 
    	public Sentence getSentenceScore(String sentence){
    		Sentence str = new Sentence();
    		str.setLength(sentence.length());
@@ -365,21 +365,24 @@ public class NaiveBayesianDAO {
    		str.setVoca_score(0);
    		
    		return str;
-   	}
+   	}*/
    
    
    	/* input : Sentence
    	 * output : grade 
    	 * */ 
-   	public int getResult(String sentence){
+   	public int getResult(String search_txt, Sentence sentence){
    		//-- 학습 데이터
    		TrainingDataSelect td = new TrainingDataSelect();
 	
    		/* DB 에서 데이터 가져오기 */
    		//HashMap<Integer, Score> map = td.selectSentenceScore();
-   		ArrayList<Sentence> list_grade1 = td.selectRandomSentence("0", 6000);
+   		/*ArrayList<Sentence> list_grade1 = td.selectRandomSentence("0", 6000);
    		ArrayList<Sentence> list_grade2 = td.selectRandomSentence("1", 6000);
-   		ArrayList<Sentence> list_grade3 = td.selectRandomSentence("2", 6000);
+   		ArrayList<Sentence> list_grade3 = td.selectRandomSentence("2", 6000);*/
+   		ArrayList<Sentence> list_grade1 = td.selectRandomSentence_essay("0", 6000);
+   		ArrayList<Sentence> list_grade2 = td.selectRandomSentence_essay("1", 6000);
+   		ArrayList<Sentence> list_grade3 = td.selectRandomSentence_essay("2", 6000);
 	    
    		NaiveBayesianDAO nb = new NaiveBayesianDAO();
    		Score scoreGrade1 = new Score();
@@ -396,10 +399,8 @@ public class NaiveBayesianDAO {
    		if(list_grade2.isEmpty() == false)	scoreGrade.add(scoreGrade2);
    		if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);
 	   
-   		Sentence str = getSentenceScore(sentence);
-   		nb.gaussianCal(str, scoreGrade, 3);
-	   
-   		return nb.gaussianCal(str, scoreGrade, 3);
+
+   		return nb.gaussianCal(sentence, scoreGrade, 3);
    	}
 
 }

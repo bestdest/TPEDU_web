@@ -1,4 +1,4 @@
-package com.hanyang.iis;
+package com.hanyang.iis.tpedu.dto;
 
 public class Sentence {
 	private double length;

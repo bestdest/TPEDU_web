@@ -19,13 +19,14 @@
 <!-- Custom Fonts -->
 <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<!-- <script src="../resources/js/jquery-1.10.2.js"></script>	 
+<script src="../resources/js/jquery-ui-1.11.1.js"></script> -->
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
@@ -51,13 +52,13 @@
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                         <h1 class="brand-heading">TPEDU</h1>
-                        <p class="intro-text">Input Sentence.</p>
+                        <p class="intro-text">Input Sentence .</p>
                         <!-- <a href="#about" class="btn btn-circle page-scroll"><i class="fa fa-angle-double-down animated"></i></a> -->
                         <%-- <h1> ${message } </h1> --%>
 						
-						<form name="s_form" >
-							<input type="" id="search_txt" name="search_txt" style="width:400px; height:45px; color: black;">
-							<span><a href="result.do" class="btn btn-default btn-lg">Search</a></span>
+						<form name="s_form" onsubmit="return false;" method="post" action="result.do">
+							<input type="text" id="search_txt" name="search_txt" style="width:400px; height:45px; color: black;">
+							<span><a href="#" id="search_btn" class="btn btn-default btn-lg">Search</a></span>
 						</form>
                     </div>
                 </div>
@@ -87,6 +88,20 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../resources/js/grayscale.js"></script>
+	
+	<script type="text/javascript">
+	
+	//조회 버튼
+	$("#search_btn").click(function(){
+		var formname = document.s_form;
+		formname.action = "result.do";
+		formname.submit();
+	});	
+	
+	function search(){
+		document.s_form.submit();
+	}
+	</script> 
 
 </body>
 </html>
