@@ -380,13 +380,13 @@ public class NaiveBayesianDAO {
    		ArrayList<Sentence> list_grade1 = td.selectRandomSentence("0", 6000);
    		ArrayList<Sentence> list_grade2 = td.selectRandomSentence("1", 6000);
    		ArrayList<Sentence> list_grade3 = td.selectRandomSentence("2", 6000);
-	   
+	    
    		NaiveBayesianDAO nb = new NaiveBayesianDAO();
    		Score scoreGrade1 = new Score();
    		Score scoreGrade2 = new Score();
    		Score scoreGrade3 = new Score();
 	   
-   		//Grade 별 평균, 분산값 집어넣기
+   		//Grade 별 평균, 분산값 집어넣기 
    		scoreGrade1 = nb.setScore(list_grade1, scoreGrade1);
    		scoreGrade2 = nb.setScore(list_grade2, scoreGrade2);
    		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);
