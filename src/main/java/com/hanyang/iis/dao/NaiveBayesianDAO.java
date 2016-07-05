@@ -386,7 +386,7 @@ public class NaiveBayesianDAO {
    		Score scoreGrade2 = new Score();
    		Score scoreGrade3 = new Score();
 	   
-   		//Grade 별 평균, 분산값 집어넣기 
+   		//Grade 별 평균, 분산값 집어넣기 2
    		scoreGrade1 = nb.setScore(list_grade1, scoreGrade1);
    		scoreGrade2 = nb.setScore(list_grade2, scoreGrade2);
    		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);
