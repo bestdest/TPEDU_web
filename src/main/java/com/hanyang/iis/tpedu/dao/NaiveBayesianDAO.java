@@ -214,6 +214,7 @@ public class NaiveBayesianDAO {
 		/* Grade 최대값 구하기 */
 		Double temp = 0.0;
 		for(int j = 0; j < grade.length; j++) {
+			System.out.println((j+1) + "등급 : " + grade[j]);
 			if(grade[j] > temp ){
 				temp = grade[j];
 				classification = j;

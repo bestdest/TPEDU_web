@@ -17,7 +17,6 @@ public class TPEDAO {
 	private CommonService CommonService;
 	 
 	public ArrayList<Integer> getSentence(){
-		System.out.println("  a  ");
 		HashMap hm = new HashMap();
 
 		ArrayList ar = CommonService.select("tpe.select_test", hm);

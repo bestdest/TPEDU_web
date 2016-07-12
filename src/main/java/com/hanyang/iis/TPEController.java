@@ -1,5 +1,7 @@
 package com.hanyang.iis;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,17 +34,13 @@ public class TPEController {
 	
 	@RequestMapping(value="/search_main.do")
 	public String search(HttpServletRequest request, Locale locale, Model model){
-		System.out.println("search");
 		model.addAttribute("message", "Search");
-		
-		System.out.println(tpedao.getSentence());
-		
+		//System.out.println(tpedao.getSentence());
 		return "/search";
 	}
 	
 	@RequestMapping(value="/search_sub.do")
 	public String search_sub(HttpServletRequest request, Locale locale, Model model){
-		System.out.println("search_sub");
 		model.addAttribute("message", "Search_SUB");
 		return "/search";
 	}
@@ -53,19 +51,35 @@ public class TPEController {
 			@RequestParam (value="search_txt" ,required=false, defaultValue = "") String search_txt, 
 			Model model){
 
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		String formattedDate = dateFormat.format(date);
+		System.out.println("검색시작시간 : " + formattedDate);
+		
 		Sentence Sentence = getFeatureScore(search_txt);
 		int grade = naivedao.getResult(search_txt, Sentence);
 		String grade_txt = "초등";
+		
 		switch(grade){
 		case 0: grade_txt = "초등"; break;
 		case 1: grade_txt = "중등"; break;
 		case 2: grade_txt = "고등"; break;
 		default: grade_txt = "초등"; break;
 		}
+		
+		date = new Date();
+		dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		formattedDate = dateFormat.format(date);
+		
+		System.out.println("결과나온시간 : " + formattedDate);
 		System.out.println("result : " + grade_txt);
 		//naivedao.
 		
+		model.addAttribute("input_txt", search_txt);
 		model.addAttribute("grade", grade_txt);
+		model.addAttribute("mlp_grade", grade_txt);
+		model.addAttribute("svm_grade", grade_txt);
+		model.addAttribute("naiv_grade", grade_txt);
 		return "/result";
 	}
 	
