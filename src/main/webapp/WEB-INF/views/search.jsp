@@ -49,8 +49,13 @@
                         <%-- <h1> ${message } </h1> --%>
 						
 						<form name="s_form" onsubmit="return false;" method="post" action="result.do">
-							<input type="text" id="search_txt" name="search_txt" style="width:600px; height:45px; color: black;">
-							<span><a href="#" id="search_btn" class="btn btn-default btn-lg">Search</a></span>
+							<!-- <input type="text" id="search_txt" name="search_txt" style="width:600px; height:45px; color: black;"> -->
+							<div style="float:left;">
+								<textarea id="search_txt" name="search_txt" rows="5" cols="80" style="color: black;background-color: rgb(250, 255, 255);"></textarea>
+							</div>
+							<div>
+							</div>
+							<span><a href="#" id="search_btn" class="btn btn-default btn-lg">Submit</a></span>
 						</form>
                     </div>
                 </div>
@@ -62,7 +67,7 @@
     <!-- Footer -->
     <footer>
         <div class="container text-center">
-            <p>Copyright &copy; Website 2016</p>
+            <p>Copyright &copy; Hanyang Artificial Intelligence Lab.</p>
         </div>
     </footer>
 
@@ -77,6 +82,10 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../resources/js/grayscale.js"></script>
+    
+    <!-- textarea_autosize -->
+    <script src="../resources/js/textarea_autosize.js"></script>
+	<script>autosize(document.querySelectorAll('textarea'));</script> 
 	
 	<script type="text/javascript">
 	$(document).ready(function(){

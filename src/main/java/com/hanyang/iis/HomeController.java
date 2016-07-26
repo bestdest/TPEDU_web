@@ -33,6 +33,14 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
+		model.addAttribute("sentence_word", 1);
+		model.addAttribute("sentence_advp", 2);
+		model.addAttribute("sentence_adjp", 0);
+		model.addAttribute("sentence_pattern", 1);
+		model.addAttribute("sentence_length", 1);
+		model.addAttribute("sentence_struct_type", 2);
+		model.addAttribute("sentence_voca", 2);
+		
 		return "home";
 	}
 	

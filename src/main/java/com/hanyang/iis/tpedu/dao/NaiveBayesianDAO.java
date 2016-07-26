@@ -1,5 +1,11 @@
 package com.hanyang.iis.tpedu.dao;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,6 +16,7 @@ import java.util.Map;
 import com.hanyang.iis.TrainingDataSelect;
 import com.hanyang.iis.tpedu.dto.Score;
 import com.hanyang.iis.tpedu.dto.Sentence;
+import com.opencsv.CSVReader;
 
 public class NaiveBayesianDAO {
 	
@@ -201,7 +208,7 @@ public class NaiveBayesianDAO {
     	System.out.println("성공횟수 : " + isSuccess + "  실패횟수 : " + isFail + "  Accurancy : " + isSuccess*1.0/(isFail + isSuccess)*1.0 + "  Precision : " + re/grade_count);
     }
     
-    /*가우시안 문장 별 등급 계산*/
+    /*가우시안 문장 별 등급 분류 (가장 큰 값 구하기)*/
     public int gaussianCal(Sentence sentence, ArrayList<Score> gradeScore, int grade_count){
     	
     	/* Grade 값 계산 */
@@ -226,21 +233,93 @@ public class NaiveBayesianDAO {
     }
     
     
+    /*각 항목별 등급 분류 */
+    public Sentence gaussianEachFeatureCal(Sentence sentence, ArrayList<Score> gradeScore, int grade_count){
+
+    	ArrayList<Double[]> length = new ArrayList<Double[]>();
+    	ArrayList<Double[]> vaca = new ArrayList<Double[]>();
+    	ArrayList<Double[]> word = new ArrayList<Double[]>();
+    	ArrayList<Double[]> advp = new ArrayList<Double[]>();
+    	ArrayList<Double[]> adjp = new ArrayList<Double[]>();
+    	ArrayList<Double[]> pattern = new ArrayList<Double[]>();
+    	ArrayList<Double[]> struct = new ArrayList<Double[]>();
+    	
+    	/* Grade 값 계산 */
+    	for(int j = 0; j < gradeScore.size(); j++){
+    		Double[] temp = new Double[2];
+    		temp = new Double[]{gradeScore.get(j).getAvg_length(), gradeScore.get(j).getVar_length()};
+    		length.add(temp);
+
+    		temp = new Double[]{gradeScore.get(j).getAvg_voca(), gradeScore.get(j).getVar_voca()};
+    		vaca.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_word_count(), gradeScore.get(j).getVar_word_count()};
+    		word.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_advp(), gradeScore.get(j).getVar_advp()};
+    		advp.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_adjp(), gradeScore.get(j).getVar_adjp()};
+    		adjp.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_pattern(), gradeScore.get(j).getVar_pattern()};
+    		pattern.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_struct_type(), gradeScore.get(j).getAvg_struct_type()};
+    		struct.add(temp);
+    		
+    	}
+    	sentence.setGrade_length(gradeClassification(length, sentence.getLength()));
+    	sentence.setGrade_voca_score(gradeClassification(vaca, sentence.getVoca_score()));
+    	sentence.setGrade_word(gradeClassification(word, sentence.getWord()));
+    	sentence.setGrade_cnt_advp(gradeClassification(advp, sentence.getCnt_advp()));
+    	sentence.setGrade_cnt_adjp(gradeClassification(adjp, sentence.getCnt_adjp()));
+    	sentence.setGrade_pattern_score(gradeClassification(pattern, sentence.getPattern_score()));
+    	sentence.setGrade_struct_type(gradeClassification(struct, sentence.getStruct_type()));
+
+    	return sentence;
+    }
+    
+    public byte gradeClassification(ArrayList<Double[]> gradeScore, Double sentence_score){
+    	TrainingDataSelect td = new TrainingDataSelect();
+    	Double score = 0.0;
+    	byte grade = 0;
+    	
+    	for(int j = 0; j < gradeScore.size(); j++){
+    		Double temp = 0.0;
+    		temp = td.calculation(gradeScore.get(j)[0], gradeScore.get(j)[1], sentence_score);
+    		//이전 등급들중 최대값 구하기
+    		if(temp > score){
+    			score = temp;
+    			grade = (byte) j;		//해당 grade 값 최대이면 등급
+    		}
+    	}
+    	
+    	return grade;
+    }
+    
+    
+    
+    
+    
     /*가우시안 분산 값 grade 별 계산*/
     public Double getCal(Score gradeScore, Sentence sentence){
     	TrainingDataSelect td = new TrainingDataSelect();
     	
-    	Double result = td.calculation(gradeScore.getAvg_length(), gradeScore.getVar_length(), sentence.getLength()) *
-    			td.calculation(gradeScore.getAvg_voca(), gradeScore.getVar_voca(), sentence.getVoca_score()) *
-    			//td.calculation(gradeScore.getAvg_pattern(), gradeScore.getVar_pattern(), sentence.getPattern_score()) *
-    			td.calculation(gradeScore.getAvg_word_count(), gradeScore.getVar_word_count(), sentence.getWord()) *
-    			td.calculation(gradeScore.getAvg_adjp(), gradeScore.getVar_adjp(), sentence.getCnt_adjp()) *
-    			td.calculation(gradeScore.getAvg_advp(), gradeScore.getVar_advp(), sentence.getCnt_advp()) *
-    			td.calculation(gradeScore.getAvg_struct_type(), gradeScore.getVar_struct_type(), sentence.getStruct_type());
+    	Double length_var = td.calculation(gradeScore.getAvg_length(), gradeScore.getVar_length(), sentence.getLength());
+    	Double voca_var = td.calculation(gradeScore.getAvg_voca(), gradeScore.getVar_voca(), sentence.getVoca_score());
+    	Double word_var = td.calculation(gradeScore.getAvg_word_count(), gradeScore.getVar_word_count(), sentence.getWord());
+    	Double pattern_var = td.calculation(gradeScore.getAvg_pattern(), gradeScore.getVar_pattern(), sentence.getPattern_score());
+    	Double adjp_var = td.calculation(gradeScore.getAvg_adjp(), gradeScore.getVar_adjp(), sentence.getCnt_adjp());
+    	Double advp_var = td.calculation(gradeScore.getAvg_advp(), gradeScore.getVar_advp(), sentence.getCnt_advp());
+    	Double struct_var = td.calculation(gradeScore.getAvg_struct_type(), gradeScore.getVar_struct_type(), sentence.getStruct_type());
+    	
+    	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var;
     	
     	return result;
     }
     
+    /*Grade 별 평균, 분산값 집어넣기 */
     public Score setScore(ArrayList<Sentence> list_grade, Score scoreGrade){
     	NaiveBayesianDAO nb = new NaiveBayesianDAO();
     	
@@ -372,36 +451,90 @@ public class NaiveBayesianDAO {
    	/* input : Sentence
    	 * output : grade 
    	 * */ 
-   	public int getResult(String search_txt, Sentence sentence){
+   	public Sentence getResult(String search_txt, Sentence sentence){
    		//-- 학습 데이터
    		TrainingDataSelect td = new TrainingDataSelect();
-	
+   		NaiveBayesianDAO nb = new NaiveBayesianDAO();
    		/* DB 에서 데이터 가져오기 */
    		//HashMap<Integer, Score> map = td.selectSentenceScore();
    		/*ArrayList<Sentence> list_grade1 = td.selectRandomSentence("0", 6000);
    		ArrayList<Sentence> list_grade2 = td.selectRandomSentence("1", 6000);
    		ArrayList<Sentence> list_grade3 = td.selectRandomSentence("2", 6000);*/
-   		ArrayList<Sentence> list_grade1 = td.selectRandomSentence_essay("0", 6000);
+   		/*ArrayList<Sentence> list_grade1 = td.selectRandomSentence_essay("0", 6000);
    		ArrayList<Sentence> list_grade2 = td.selectRandomSentence_essay("1", 6000);
-   		ArrayList<Sentence> list_grade3 = td.selectRandomSentence_essay("2", 6000);
+   		ArrayList<Sentence> list_grade3 = td.selectRandomSentence_essay("2", 6000);*/
+   		
+   		//String filename = "D:\\Temp\\0529_grade7\\TPEDU_eval_set1.csv";
+   		/*String filename = "D:\\Temp\\TPEDU_train.csv";
+    	ArrayList<Sentence> list_grade1 = td.readCsv(filename, 0);
+    	ArrayList<Sentence> list_grade2 = td.readCsv(filename, 1);
+    	ArrayList<Sentence> list_grade3 = td.readCsv(filename, 2);*/
+    	/*ArrayList<Sentence> list_grade4 = td.readCsv(filename, 3);
+    	ArrayList<Sentence> list_grade5 = td.readCsv(filename, 4);
+    	ArrayList<Sentence> list_grade6 = td.readCsv(filename, 5);
+    	ArrayList<Sentence> list_grade7 = td.readCsv(filename, 6);
+    	ArrayList<Sentence> test_list = td.readCsv("D:\\Temp\\0615_essay_Normalized\\TPEDU_essay5_train.csv", -1);
+    	*/
+
 	    
-   		NaiveBayesianDAO nb = new NaiveBayesianDAO();
+   		/*
    		Score scoreGrade1 = new Score();
    		Score scoreGrade2 = new Score();
    		Score scoreGrade3 = new Score();
 	   
-   		//Grade 별 평균, 분산값 집어넣기 2
+   		//Grade 별 평균, 분산값 집어넣기 
    		scoreGrade1 = nb.setScore(list_grade1, scoreGrade1);
    		scoreGrade2 = nb.setScore(list_grade2, scoreGrade2);
-   		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);
+   		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);*/
 
-   		ArrayList<Score> scoreGrade = new ArrayList<Score>();
-   		if(list_grade1.isEmpty() == false) 	scoreGrade.add(scoreGrade1);
+   		//등급값들을 하나의 ArrayList 에 집어넣기
+   		ArrayList<Score> scoreGrade = readData("D:/Temp/Naive/conf.bin");
+   		/*if(list_grade1.isEmpty() == false) 	scoreGrade.add(scoreGrade1);
    		if(list_grade2.isEmpty() == false)	scoreGrade.add(scoreGrade2);
-   		if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);
+   		if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);*/
+   		
 	   
-
-   		return nb.gaussianCal(sentence, scoreGrade, 3);
+   		sentence = gaussianEachFeatureCal(sentence, scoreGrade, 3);
+   		
+   		sentence.setGrade(nb.gaussianCal(sentence, scoreGrade, 3));
+   		return sentence;				    /*가우시안 문장 별 등급 분류 (가장 큰 값 구하기)*/
    	}
+   	
+
+    public ArrayList<Score> readData(String filename) {
+    	ArrayList<Score> scoreGrade = new ArrayList<Score>();
+		try {
+			// CSVReader reader = new CSVReader(new FileReader(filename), '\t');
+			// UTF-8
+			BufferedReader in = new BufferedReader(new FileReader(filename));
+			String s;
+			while ((s = in.readLine()) != null) {
+				Score data = new Score();
+				String[] split = s.split("\t");
+				int i = 0;
+				data.setAvg_adjp(Double.parseDouble(split[i]));
+				data.setAvg_advp(Double.parseDouble(split[++i]));
+				data.setAvg_length(Double.parseDouble(split[++i]));
+				data.setAvg_pattern(Double.parseDouble(split[++i]));
+				data.setAvg_struct_type(Double.parseDouble(split[++i]));
+				data.setAvg_voca(Double.parseDouble(split[++i]));
+				data.setAvg_word_count(Double.parseDouble(split[++i]));
+				data.setVar_adjp(Double.parseDouble(split[i]));
+				data.setVar_advp(Double.parseDouble(split[++i]));
+				data.setVar_length(Double.parseDouble(split[++i]));
+				data.setVar_pattern(Double.parseDouble(split[++i]));
+				data.setVar_struct_type(Double.parseDouble(split[++i]));
+				data.setVar_voca(Double.parseDouble(split[++i]));
+				data.setVar_word_count(Double.parseDouble(split[++i]));
+				
+				scoreGrade.add(data);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return scoreGrade;
+	}
 
 }

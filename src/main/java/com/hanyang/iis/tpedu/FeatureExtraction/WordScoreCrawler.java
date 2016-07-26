@@ -7,7 +7,10 @@ import java.net.URLConnection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.DataNode;
@@ -16,11 +19,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.mysql.jdbc.Connection;
+import com.org.watsonwrite.lawrence.Lawrence;
 
 public class WordScoreCrawler {
 	public static double MAX = 50;
 	
-	public static double vocaScore(String sentence){
+	public static double vocaScore(String sentence) throws IOException{
 		StringTokenizer st = new StringTokenizer(sentence," ,.?!-()/;:~\"");
 		String[] words = new String[st.countTokens()];
 		Double score = 0.0;
@@ -31,8 +35,14 @@ public class WordScoreCrawler {
 		}
 		Double sentence_Score = 0.0;
 		int words_count=0;
+		int sum_of_wordlen=0;
+		int sum_of_wordsyl=0;
+		Lawrence lawrence = new Lawrence();
+		
 		for(i=0; i< words.length;i++){
-//			System.out.println(words[i]);
+			sum_of_wordlen += words[i].length();
+			sum_of_wordsyl += lawrence.getSyllable(words[i]);
+//			System.out.println(words[i]+"/"+words[i].length()+"/"+lawrence.getSyllable(words[i]));
 			words[i].replace("\"", "");
 			if(words[i].length()==1)
 				continue;
@@ -53,7 +63,7 @@ public class WordScoreCrawler {
 				}
 			}
 			
-			if(score ==0.0)
+			if(score == 0.0)
 				continue;
 			
 //			System.out.println(words[i]+"="+score);
@@ -63,6 +73,11 @@ public class WordScoreCrawler {
 //			System.out.println(words[i] + " : " + Math.log10(MAX/score));
 		}
 		
+		double avg_of_wordlen = (double)sum_of_wordlen/(double)words.length;
+		double avg_of_wordsyl = (double)sum_of_wordsyl/(double)words.length;
+		System.out.println("NumChar : " + avg_of_wordlen);
+		System.out.println("NumSyll : " + avg_of_wordsyl);
+		
 		return sentence_Score; // Sum
 		
 //		if(sentence_Score == 0.0) //Avg
@@ -71,6 +86,68 @@ public class WordScoreCrawler {
 //			return sentence_Score/(double)words_count; 
 	}
 	
+	public static int countSyllabes2(String word){
+		  // getNumSyllables method in BasicDocument (module 1) and 
+	    // EfficientDocument (module 2).
+	    int syllables = 0;
+	    word = word.toLowerCase();
+	    if(word.contains("the ")){
+	        syllables ++;
+	    }
+	    String[] split = word.split("e!$|e[?]$|e,|e |e[),]|e$");
+
+	    ArrayList<String> tokens = new ArrayList<String>();
+	    Pattern tokSplitter = Pattern.compile("[aeiouy]+");
+
+	    for (int i = 0; i < split.length; i++) {
+	        String s = split[i];
+	        Matcher m = tokSplitter.matcher(s);
+
+	        while (m.find()) {
+	            tokens.add(m.group());
+	        }
+	    }
+
+	    syllables += tokens.size();
+	    return syllables;
+	}
+	
+	
+	public static int countSyllabes(String word){
+		int count =0;
+		word = word.toLowerCase();
+	    for (int i = 0; i < word.length(); i++) {
+	        if (word.charAt(i) == '\"' || word.charAt(i) == '\'' || word.charAt(i) == '-' || word.charAt(i) == ',' || word.charAt(i) == ')' || word.charAt(i) == '(') {
+	            word = word.substring(0,i)+word.substring(i+1, word.length());
+	        }
+	    }
+	    boolean isPrevVowel = false;
+	    for (int j = 0; j < word.length(); j++) {
+	        if (word.contains("a") || word.contains("e") || word.contains("i") || word.contains("o") || word.contains("u")) {
+	            if (isVowel(word.charAt(j)) && !((word.charAt(j) == 'e') && (j == word.length()-1))) {
+	                if (isPrevVowel == false) {
+	                    count++;
+	                    isPrevVowel = true;
+	                }
+	            } else {
+	                isPrevVowel = false;
+	            }
+	        } else {
+	            count++;
+	            break;
+	        }
+	    }
+		
+		return count;
+	}
+	
+	public static boolean isVowel(char c) {
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 	
 	public static void vocaInsertToDB(){
 		// 여기는 Training Dataset 어휘 DB화 하는 부분.
@@ -185,26 +262,25 @@ public class WordScoreCrawler {
 		String url = "http://www.collinsdictionary.com/dictionary/english/"+word;
 		String html = GetHtmlThroughURL(url);
 		Document document = Jsoup.parse(html);
-		
+//		System.out.println(document);
 		Elements div = document.select("script");
-		
+		// script.text/javascript
+//		System.out.println(div.toString());
 		Double word_score = 0.0;
 		
 		for(Element e: div){
-			for(DataNode node : e.dataNodes()){
-				String[] script = node.getWholeData().split("\"2008\",");
-				for(int i=0; i<script.length;i++){
-					String[] script2 = script[i].split("]];");
-					
-					
-					if(i==1 ){
+			if(e.data().contains("2008")){
+				String[] script = e.data().split("2008:");
+				for(int i=0; i< script.length;i++){
+					String[] script2 = script[i].split("\";");
+					if(i==1){
 						if(script2[0].contains("null"))
 							word_score = 100.0;
 						else
-							word_score = Double.parseDouble(script2[0]);
-//						System.out.println(word_score);
+							word_score = Double.parseDouble("0."+script2[0]);
 					}
 				}
+				break;
 			}
 		}
 		

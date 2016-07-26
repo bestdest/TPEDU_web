@@ -14,10 +14,9 @@ import com.hanyang.iis.tpedu.dto.Sentence;
 import com.hanyang.iis.tpedu.dto.TargetDTO;
 
 public class main_Pattern_Matcher {
-	// public static int grade = 7;
+//	public static int grade = 7;
 	public static int SEN_COUNT = 3050; // 수정 필요
-	public static int Input_type = 0;
-
+	public static int Input_type=0;
 	public static int getInput_type() {
 		return Input_type;
 	}
@@ -58,12 +57,12 @@ public class main_Pattern_Matcher {
 		Input_word = input_word;
 	}
 
-	public static int Input_cnt_advp = 0;
-	public static int Input_cnt_adjp = 0;
-	public static int Input_length = 0;
-	public static int Input_word = 0;
-	public static String Input_pattern = "";
-
+	public static int Input_cnt_advp=0;
+	public static int Input_cnt_adjp=0;
+	public static int Input_length=0;
+	public static int Input_word=0;
+	public static String Input_pattern="";
+	
 	public static String getInput_pattern() {
 		return Input_pattern;
 	}
@@ -72,203 +71,222 @@ public class main_Pattern_Matcher {
 		Input_pattern = input_pattern;
 	}
 
-	public static Sentence Pattern_Matcher(String Pattern_Sentence, int numOfGrade, String tableName) {
+	public static Sentence Pattern_Matcher (String Pattern_Sentence, int numOfGrade, String tableName) {
 		Sentence sentence = new Sentence();
 		Double pattern_Score = 0.0;
 		int total_Matched_size = 0;
-		int[] matched_count_byGrade = { 0, 0, 0, 0, 0, 0, 0 };
-		double[] score_byGrade = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-
+		int[] matched_count_byGrade = {0,0,0,0,0,0,0};
+		double[] score_byGrade = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+			
+		
 		TargetDAO Targetdao = new TargetDAO();
-		SentenParser SentenP = new SentenParser();
+	      SentenParser SentenP = new SentenParser();
+	      
+	      String Pattern_ParseTree = SentenP.GetParseTree(Pattern_Sentence);
 
-		String Pattern_ParseTree = SentenP.GetParseTree(Pattern_Sentence);
+	      LeafChanger LC = new LeafChanger();
+	      
+	      //get original input
+	      String Input_sentence = Pattern_Sentence;
+	      Input_pattern = Pattern_ParseTree;
+	      
+	      Pattern_ParseTree = LC.ChangeLeaf(Pattern_ParseTree);
+	      
+	      Prunner Prun = new Prunner();
+	      
+	      Pattern_ParseTree = Prun.Prun_Leafs(Pattern_ParseTree);
+	      
+	      Pattern_ParseTree = Prun.Prunning(Pattern_ParseTree);
+	      
+	      
+	      //get input's state
+	      StringTokenizer stkn = new StringTokenizer(Input_sentence);
+	      String Input_pruned_pattern = Pattern_ParseTree;
+	      int Input_grade = 0;
+	      int Input_lang = 2;
+	      
+	      TypeClassifier TC = new TypeClassifier();
+	      Input_type = TC.GetType(Input_pattern);
+	      Input_cnt_advp = LC.Count_ADVP(Input_pattern);
+	      Input_cnt_adjp = LC.Count_ADJP(Input_pattern);
+	      Input_length = Input_sentence.length();
+	      Input_word = stkn.countTokens();
 
-		LeafChanger LC = new LeafChanger();
+	      
+	      System.out.println("Sentence : "+Input_sentence);
+	      System.out.println("Pattern : "+Input_pattern);
+	      System.out.println("Pruned Pattern : "+Input_pruned_pattern);
+	      System.out.println("Type : "+Input_type);
+	      System.out.println("Advp : "+Input_cnt_advp);
+	      System.out.println("Adjp : "+Input_cnt_adjp);
+	      System.out.println("Length : "+Input_length);
+	      System.out.println("Word : "+Input_word);
+	      
+		  sentence.setCnt_adjp(Input_cnt_adjp/5);
+		  sentence.setCnt_advp(Input_cnt_advp/5);
+		  sentence.setLength(Input_length/380);
+	 	  sentence.setWord(Input_word/55);
+		  sentence.setStruct_type(Input_type/4);
+			
+	      
+	      List<PatternNode> Pattern_PostTree = Build_Pattern_PostTree(Pattern_ParseTree);
+	      
+	      List<TargetDTO> TargetList = Targetdao.GetTargetList(tableName);
+	      
+	      List<TargetDTO> MatchedTargetList = new ArrayList<TargetDTO>();
+	      
+	      
+	      for(int i = 0;i<TargetList.size();i++){
+	    	  
+	         List<TargetNode> curTargetPostTree = null;
+	         curTargetPostTree = SentenP.GetParseTreePostTree(TargetList.get(i).getSentence(), TargetList.get(i).getPattern());
 
-		// get original input
-		String Input_sentence = Pattern_Sentence;
-		Input_pattern = Pattern_ParseTree;
-
-		Pattern_ParseTree = LC.ChangeLeaf(Pattern_ParseTree);
-
-		Prunner Prun = new Prunner();
-
-		Pattern_ParseTree = Prun.Prun_Leafs(Pattern_ParseTree);
-
-		Pattern_ParseTree = Prun.Prunning(Pattern_ParseTree);
-
-		// get input's state
-		StringTokenizer stkn = new StringTokenizer(Input_sentence);
-		String Input_pruned_pattern = Pattern_ParseTree;
-		int Input_grade = 0;
-		int Input_lang = 2;
-
-		TypeClassifier TC = new TypeClassifier();
-		Input_type = TC.GetType(Input_pattern);
-		Input_cnt_advp = LC.Count_ADVP(Input_pattern);
-		Input_cnt_adjp = LC.Count_ADJP(Input_pattern);
-		Input_length = Input_sentence.length();
-		Input_word = stkn.countTokens();
-
-		System.out.println("Sentence : " + Input_sentence);
-		System.out.println("Pattern : " + Input_pattern);
-		System.out.println("Pruned Pattern : " + Input_pruned_pattern);
-		System.out.println("Type : " + Input_type);
-		System.out.println("Advp : " + Input_cnt_advp);
-		System.out.println("Adjp : " + Input_cnt_adjp);
-		System.out.println("Length : " + Input_length);
-		System.out.println("Word : " + Input_word);
-		
-		sentence.setCnt_adjp(Input_cnt_adjp);
-		sentence.setCnt_advp(Input_cnt_advp);
-		sentence.setLength(Input_length);
-		sentence.setWord(Input_word);
-		sentence.setStruct_type(Input_type);
-		
-
-		List<PatternNode> Pattern_PostTree = Build_Pattern_PostTree(Pattern_ParseTree);
-		List<TargetDTO> TargetList = Targetdao.GetTargetList(tableName);
-		List<TargetDTO> MatchedTargetList = new ArrayList<TargetDTO>();
-
-		for (int i = 0; i < TargetList.size(); i++) {
-
-			List<TargetNode> curTargetPostTree = null;
-			curTargetPostTree = SentenP.GetParseTreePostTree(TargetList.get(i).getSentence(), TargetList.get(i).getPattern());
-
-			if (curTargetPostTree == null) {
-				System.out.println("cur target fail!!");
-				sentence.setPattern_score(0);
+	         if(curTargetPostTree == null){
+	            System.out.println("cur target fail!!");
+	            sentence.setPattern_score(0);
 				return sentence;
-			}
-
-			if (matching(curTargetPostTree, Pattern_PostTree)) {
-				MatchedTargetList.add(TargetList.get(i));
-			}
-		}
-
+	         }
+	         
+	         if(matching(curTargetPostTree,Pattern_PostTree)){
+	            MatchedTargetList.add(TargetList.get(i));
+	         }
+	      }
+		
 		total_Matched_size = MatchedTargetList.size();
 		ArrayList<Integer> matched = new ArrayList<Integer>();
-
+		
 		// 수준 별로 매칭된 패턴의 결과를 세는 부분
-		for (int i = 0; i < MatchedTargetList.size(); i++) {
-			if (numOfGrade == 7) {
-				if (MatchedTargetList.get(i).getGrage() / 10 == 1) { // 10 11 12
-																		// 13 14
-																		// 15 16
+		for(int i = 0;i<MatchedTargetList.size();i++){
+			if(numOfGrade==7){
+				if(MatchedTargetList.get(i).getGrage()/10 == 1){ // 10 11 12 13 14 15 16
 					matched_count_byGrade[0]++;
 					matched.add(0);
-				} else if (MatchedTargetList.get(i).getGrage() == 21) {
+				}else if(MatchedTargetList.get(i).getGrage() == 21){
 					matched_count_byGrade[1]++;
 					matched.add(1);
-				} else if (MatchedTargetList.get(i).getGrage() == 22) {
+				}else if(MatchedTargetList.get(i).getGrage() == 22){
 					matched_count_byGrade[2]++;
 					matched.add(2);
-				} else if (MatchedTargetList.get(i).getGrage() == 23) {
+				}else if(MatchedTargetList.get(i).getGrage() == 23){
 					matched_count_byGrade[3]++;
 					matched.add(3);
-				} else if (MatchedTargetList.get(i).getGrage() == 31) {
+				}else if(MatchedTargetList.get(i).getGrage() == 31){
 					matched_count_byGrade[4]++;
 					matched.add(4);
-				} else if (MatchedTargetList.get(i).getGrage() == 32) {
+				}else if(MatchedTargetList.get(i).getGrage() == 32){
 					matched_count_byGrade[5]++;
 					matched.add(5);
-				} else if (MatchedTargetList.get(i).getGrage() == 33) {
+				}else if(MatchedTargetList.get(i).getGrage() == 33){
 					matched_count_byGrade[6]++;
 					matched.add(6);
-				} else {
-
+				}else{
+					
 				}
-			} else if (numOfGrade == 4) {
-				if (MatchedTargetList.get(i).getGrage() == 0) {
+			}else if(numOfGrade==4){
+				if(MatchedTargetList.get(i).getGrage() == 0){
 					matched_count_byGrade[0]++;
 					matched.add(0);
-				} else if (MatchedTargetList.get(i).getGrage() == 1) {
+				}else if(MatchedTargetList.get(i).getGrage() == 1){
 					matched_count_byGrade[1]++;
 					matched.add(1);
-				} else if (MatchedTargetList.get(i).getGrage() == 2) {
+				}else if(MatchedTargetList.get(i).getGrage() == 2){
 					matched_count_byGrade[2]++;
 					matched.add(2);
-				} else if (MatchedTargetList.get(i).getGrage() == 3) {
+				}else if(MatchedTargetList.get(i).getGrage() == 3){
 					matched_count_byGrade[3]++;
 					matched.add(3);
-				} else if (MatchedTargetList.get(i).getGrage() == 4) {
+				}else if(MatchedTargetList.get(i).getGrage() == 4){
 					matched_count_byGrade[4]++;
 					matched.add(4);
-				} else {
-
+				}else{
+					
 				}
-			} else if (numOfGrade == 5) {
-				if (MatchedTargetList.get(i).getGrage() == 0) {
+			}else if(numOfGrade==5){
+				if(MatchedTargetList.get(i).getGrage() == 0){
 					matched_count_byGrade[0]++;
 					matched.add(0);
-				} else if (MatchedTargetList.get(i).getGrage() == 1) {
+				}else if(MatchedTargetList.get(i).getGrage() == 1){
 					matched_count_byGrade[1]++;
 					matched.add(1);
-				} else if (MatchedTargetList.get(i).getGrage() == 2) {
+				}else if(MatchedTargetList.get(i).getGrage() == 2){
 					matched_count_byGrade[2]++;
 					matched.add(2);
-				} else if (MatchedTargetList.get(i).getGrage() == 3) {
+				}else if(MatchedTargetList.get(i).getGrage() == 3){
 					matched_count_byGrade[3]++;
 					matched.add(3);
-				} else if (MatchedTargetList.get(i).getGrage() == 4) {
+				}else if(MatchedTargetList.get(i).getGrage() == 4){
 					matched_count_byGrade[4]++;
 					matched.add(4);
-				} else if (MatchedTargetList.get(i).getGrage() == 5) {
+				}else if(MatchedTargetList.get(i).getGrage() == 5){
 					matched_count_byGrade[5]++;
-					matched.add(4);
-				} else {
-
+					matched.add(5);
+				}else{
+					
+				}
+			}else if(numOfGrade==3){
+				if(MatchedTargetList.get(i).getGrage()/10 == 1){ // 10 11 12 13 14 15 16
+					matched_count_byGrade[0]++;
+					matched.add(0);
+				}else if(MatchedTargetList.get(i).getGrage()/10 == 2){
+					matched_count_byGrade[1]++;
+					matched.add(1);
+				}else if(MatchedTargetList.get(i).getGrage()/10 == 3){
+					matched_count_byGrade[2]++;
+					matched.add(2);
+				}else{
+					
 				}
 			}
-			// System.out.println(MatchedTargetList.get(i).getGrage());
-		}
-
-		if (total_Matched_size != 0) { // 매칭된 결과가 하나라도 있으면 패턴 스코어 산정
-			for (int i = 0; i < numOfGrade; i++) {
-				score_byGrade[i] = (i + 1) * ((double) matched_count_byGrade[i] / (double) total_Matched_size);
-				pattern_Score += score_byGrade[i];
-				// System.out.println((i+1)+" : " + matched_count_byGrade[i]);
-				// System.out.println((i+1)+" : " + score_byGrade[i]);
-			}
-			// System.out.println(pattern_Score);
-			double standardDeviation = getStandardDeviation(matched);
-			// pattern_Score =
-			// pattern_Score*(((double)SEN_COUNT-(double)total_Matched_size)/(double)SEN_COUNT);
-			pattern_Score = pattern_Score * (1.0 / (standardDeviation + 1.0));
-			System.out.println(MatchedTargetList.size() + "개의 표준편차 : " + standardDeviation);
-
-		} else { // 없으면 가장 어려운 문장 구조로 판단해서 MAX 값 입력
-			pattern_Score = (double) numOfGrade;
+			
+			
+//			System.out.println(MatchedTargetList.get(i).getGrage());
 		}
 		
-		// System.out.println("num : " + MatchedTargetList.size());
-		sentence.setPattern_score(pattern_Score);
+		if(total_Matched_size != 0){ // 매칭된 결과가 하나라도 있으면 패턴 스코어 산정
+			for(int i=0; i<numOfGrade;i++){
+				score_byGrade[i] = (i+1)*((double)matched_count_byGrade[i]/(double)total_Matched_size);
+				pattern_Score += score_byGrade[i];
+//				System.out.println((i+1)+" : " + matched_count_byGrade[i]);
+//				System.out.println((i+1)+" : " + score_byGrade[i]);
+			}
+//			System.out.println(pattern_Score);
+			double standardDeviation = getStandardDeviation(matched);
+			System.out.println(pattern_Score);
+//			pattern_Score = pattern_Score*(((double)SEN_COUNT-(double)total_Matched_size)/(double)SEN_COUNT);
+			pattern_Score = pattern_Score*(1.0/(standardDeviation+1.0));
+			System.out.println(MatchedTargetList.size()+"개의 표준편차 : "+standardDeviation);
+			
+		}else{ // 없으면 가장 어려운 문장 구조로 판단해서 MAX 값 입력
+			pattern_Score = (double)numOfGrade;
+		}
+		
+//		System.out.println("num : " + MatchedTargetList.size());
+		sentence.setPattern_score(pattern_Score/7);
 		return sentence;
 	}
-
-	public static double getStandardDeviation(ArrayList<Integer> lists) {
+	
+	public static double getStandardDeviation(ArrayList<Integer> lists){
 		double StandardDeviation = 0.0;
 		StandardDeviation = Math.sqrt(getVariance(lists));
 		return StandardDeviation;
 	}
-
-	public static double getVariance(ArrayList<Integer> lists) {
+	public static double getVariance(ArrayList<Integer> lists){
 		double Variance = 0.0;
-		double avg = 0;
-		int sum = 0;
-		for (int i = 0; i < lists.size(); i++) {
+		double avg=0;
+		int sum=0;
+		for(int i=0; i<lists.size();i++){
 			sum += lists.get(i);
 		}
-		avg = (double) sum / (double) lists.size();
-
-		double SumOfDeviation = 0.0;
-		for (int i = 0; i < lists.size(); i++) {
-			SumOfDeviation += Math.pow(lists.get(i).doubleValue() - avg, 2);
+		avg = (double)sum/(double)lists.size();
+		
+		double SumOfDeviation =0.0;
+		for(int i=0; i<lists.size();i++){
+			SumOfDeviation += Math.pow(lists.get(i).doubleValue()-avg, 2);
 		}
-		Variance = SumOfDeviation / lists.size();
+		Variance = SumOfDeviation/lists.size();
 		return Variance;
 	}
+	
 
 	private static List<PatternNode> Build_Pattern_PostTree(String Pattern) {
 		String Query = "";
@@ -317,7 +335,8 @@ public class main_Pattern_Matcher {
 
 		// find parent
 		for (int i = 1; i < PatternTree_Post.size(); i++) {
-			PatternTree_Post.get(PatternTree_Post.get(i).getPID()).Addchildren(i);
+			PatternTree_Post.get(PatternTree_Post.get(i).getPID()).Addchildren(
+					i);
 		}
 
 		// PatternTree making end
@@ -347,3 +366,7 @@ public class main_Pattern_Matcher {
 
 	}
 }
+
+
+
+

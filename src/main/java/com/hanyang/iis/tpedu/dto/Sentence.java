@@ -9,8 +9,58 @@ public class Sentence {
 	private double cnt_advp;
 	private double cnt_adjp;
 	private double word;
-	private int grade;
 	
+	private byte grade_length;
+	private byte grade_struct_type;
+	private byte grade_voca_score;
+	private byte grade_pattern_score;
+	private byte grade_cnt_advp;
+	private byte grade_cnt_adjp;
+	private byte grade_word;
+	private int grade;
+
+	public byte getGrade_length() {
+		return grade_length;
+	}
+	public void setGrade_length(byte grade_length) {
+		this.grade_length = grade_length;
+	}
+	public byte getGrade_struct_type() {
+		return grade_struct_type;
+	}
+	public void setGrade_struct_type(byte grade_struct_type) {
+		this.grade_struct_type = grade_struct_type;
+	}
+	public byte getGrade_voca_score() {
+		return grade_voca_score;
+	}
+	public void setGrade_voca_score(byte grade_voca_score) {
+		this.grade_voca_score = grade_voca_score;
+	}
+	public byte getGrade_pattern_score() {
+		return grade_pattern_score;
+	}
+	public void setGrade_pattern_score(byte grade_pattern_score) {
+		this.grade_pattern_score = grade_pattern_score;
+	}
+	public byte getGrade_cnt_advp() {
+		return grade_cnt_advp;
+	}
+	public void setGrade_cnt_advp(byte grade_cnt_advp) {
+		this.grade_cnt_advp = grade_cnt_advp;
+	}
+	public byte getGrade_cnt_adjp() {
+		return grade_cnt_adjp;
+	}
+	public void setGrade_cnt_adjp(byte grade_cnt_adjp) {
+		this.grade_cnt_adjp = grade_cnt_adjp;
+	}
+	public byte getGrade_word() {
+		return grade_word;
+	}
+	public void setGrade_word(byte grade_word) {
+		this.grade_word = grade_word;
+	}
 	public double getLength() {
 		return length;
 	}
