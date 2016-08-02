@@ -122,11 +122,11 @@ public class main_Pattern_Matcher {
 	      System.out.println("Length : "+Input_length);
 	      System.out.println("Word : "+Input_word);
 	      
-		  sentence.setCnt_adjp(Input_cnt_adjp/5);
-		  sentence.setCnt_advp(Input_cnt_advp/5);
-		  sentence.setLength(Input_length/380);
-	 	  sentence.setWord(Input_word/55);
-		  sentence.setStruct_type(Input_type/4);
+		  sentence.setCnt_adjp(Input_cnt_adjp/5.0);
+		  sentence.setCnt_advp(Input_cnt_advp/5.0);
+		  sentence.setLength(Input_length/380.0);
+	 	  sentence.setWord(Input_word/55.0);
+		  sentence.setStruct_type(Input_type/4.0);
 			
 	      
 	      List<PatternNode> Pattern_PostTree = Build_Pattern_PostTree(Pattern_ParseTree);
@@ -251,7 +251,7 @@ public class main_Pattern_Matcher {
 			}
 //			System.out.println(pattern_Score);
 			double standardDeviation = getStandardDeviation(matched);
-			System.out.println(pattern_Score);
+			System.out.println("pattern_Score : " + pattern_Score);
 //			pattern_Score = pattern_Score*(((double)SEN_COUNT-(double)total_Matched_size)/(double)SEN_COUNT);
 			pattern_Score = pattern_Score*(1.0/(standardDeviation+1.0));
 			System.out.println(MatchedTargetList.size()+"개의 표준편차 : "+standardDeviation);
@@ -261,7 +261,7 @@ public class main_Pattern_Matcher {
 		}
 		
 //		System.out.println("num : " + MatchedTargetList.size());
-		sentence.setPattern_score(pattern_Score/7);
+		sentence.setPattern_score(pattern_Score/3.0);
 		return sentence;
 	}
 	

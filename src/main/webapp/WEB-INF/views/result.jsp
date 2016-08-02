@@ -42,6 +42,24 @@
 <script src="../resources/js/chart/highchart/highcharts-more.js"></script>
 <script src="../resources/js/chart/highchart/modules/exporting.js"></script>
 
+
+<style type="text/css">
+::selection {
+    background:#99CC00;
+    color: #FFF;
+    text-shadow: none;
+}
+::-moz-selection {
+    background:#99CC00;
+    color: #FFF;
+    text-shadow: none;
+}
+::-webkit-selection {
+    background:#99CC00;
+    color: #FFF;
+    text-shadow: none;
+}
+</style>
 </head>
 <body>
     <!-- Intro Header -->

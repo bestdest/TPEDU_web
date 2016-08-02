@@ -1,19 +1,22 @@
 package com.hanyang.iis.tpedu.FeatureExtraction;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -24,7 +27,7 @@ import com.org.watsonwrite.lawrence.Lawrence;
 public class WordScoreCrawler {
 	public static double MAX = 50;
 	
-	public static double vocaScore(String sentence) throws IOException{
+	public static HashMap<String,Double> vocaScore(String sentence) throws IOException{
 		StringTokenizer st = new StringTokenizer(sentence," ,.?!-()/;:~\"");
 		String[] words = new String[st.countTokens()];
 		Double score = 0.0;
@@ -33,20 +36,39 @@ public class WordScoreCrawler {
 		while(st.hasMoreTokens()){
 			words[i++]=st.nextToken().toLowerCase();
 		}
-		Double sentence_Score = 0.0;
+		double sentence_Score = 0.0;
+		double AWL_score = 0.0;
+		HashMap<String,Double> lexical = new HashMap<String,Double>();
+		
 		int words_count=0;
 		int sum_of_wordlen=0;
 		int sum_of_wordsyl=0;
 		Lawrence lawrence = new Lawrence();
 		
 		for(i=0; i< words.length;i++){
+			
+			/*
+			 * AWL score Adding
+			 */
+			for(int j=1; j<11;j++){
+				String file = "src/main/resources/AWL/AWL"+j+".txt";
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
+				String awl_word = null;
+				while((awl_word = reader.readLine())!=null){
+					if(words[i].equals(awl_word)){
+//						System.out.println(j+ " : " + words[i]);
+						AWL_score += 0.1*j;
+					}	
+				}
+			}
+			
 			sum_of_wordlen += words[i].length();
 			sum_of_wordsyl += lawrence.getSyllable(words[i]);
-//			System.out.println(words[i]+"/"+words[i].length()+"/"+lawrence.getSyllable(words[i]));
+			
 			words[i].replace("\"", "");
 			if(words[i].length()==1)
 				continue;
-			if(words[i].contains("hansel") ||words[i].contains("mongolians") ||words[i].contains("spiderman") ||words[i].contains("pipi") ||words[i].contains("mattie") ||words[i].contains("bella") || words[i].contains("mira") || words[i].contains("dancers") || words[i].contains("ﬁrst"))
+			if(words[i].contains("hansel") ||words[i].contains("mongolians") ||words[i].contains("spiderman") ||words[i].contains("pipi") ||words[i].contains("mattie") ||words[i].contains("bella") || words[i].contains("mira") || words[i].contains("dancers") || words[i].contains("?rst"))
 				continue;
 			if(words[i].contains("'") || words[i].contains("$") || words[i].contains("&")|| words[i].contains("%"))
 				continue;
@@ -66,19 +88,20 @@ public class WordScoreCrawler {
 			if(score == 0.0)
 				continue;
 			
-//			System.out.println(words[i]+"="+score);
 			words_count++;
-//			System.out.println(MAX/score+" : " + Math.log(MAX/score));
 			sentence_Score += Math.log10(MAX/score); // 문장 어휘 점수 총합
-//			System.out.println(words[i] + " : " + Math.log10(MAX/score));
 		}
 		
 		double avg_of_wordlen = (double)sum_of_wordlen/(double)words.length;
 		double avg_of_wordsyl = (double)sum_of_wordsyl/(double)words.length;
-		System.out.println("NumChar : " + avg_of_wordlen);
-		System.out.println("NumSyll : " + avg_of_wordsyl);
+//		System.out.println("NumChar : " + avg_of_wordlen);
+//		System.out.println("NumSyll : " + avg_of_wordsyl);
+		lexical.put("voca_score", sentence_Score);
+		lexical.put("NumChar", avg_of_wordlen);
+		lexical.put("NumSyll", avg_of_wordsyl);
+		lexical.put("AWL_score", AWL_score);
 		
-		return sentence_Score; // Sum
+		return lexical; // Sum
 		
 //		if(sentence_Score == 0.0) //Avg
 //			return sentence_Score;
@@ -276,8 +299,9 @@ public class WordScoreCrawler {
 					if(i==1){
 						if(script2[0].contains("null"))
 							word_score = 100.0;
-						else
+						else{
 							word_score = Double.parseDouble("0."+script2[0]);
+						}
 					}
 				}
 				break;

@@ -19,6 +19,24 @@
 <!-- Custom Fonts -->
 <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+<style type="text/css">
+::selection {
+    background:#99CC00;
+    color: #FFF;
+    text-shadow: none;
+}
+::-moz-selection {
+    background:#99CC00;
+    color: #FFF;
+    text-shadow: none;
+}
+::-webkit-selection {
+    background:#99CC00;
+    color: #FFF;
+    text-shadow: none;
+}
+</style>
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">

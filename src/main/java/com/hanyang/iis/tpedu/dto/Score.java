@@ -15,6 +15,33 @@ public class Score {
 	private Double var_word_count = null;
 	private Double avg_struct_type = null;
 	private Double var_struct_type = null;
+
+	private Double avg_cnt_char = null;
+	private Double var_cnt_char = null;
+	private Double avg_cnt_syllable = null;
+	private Double var_cnt_syllable = null;
+	private Double avg_cnt_modifier = null;
+	private Double var_cnt_modifier = null;
+	private Double avg_awl = null;
+	private Double var_awl = null;
+	private Double avg_variation_modifier = null;
+	private Double var_variation_modifier = null;
+	private Double avg_variation_adv = null;
+	private Double var_variation_adv = null;
+	private Double avg_variation_adj = null;
+	private Double var_variation_adj = null;
+	private Double avg_cnt_cc = null;
+	private Double var_cnt_cc = null;
+	private Double avg_cnt_sbar = null;
+	private Double var_cnt_sbar = null;
+	private Double avg_cnt_compound = null;
+	private Double var_cnt_compound = null;
+	private Double avg_gr_cnt = null;
+	private Double var_gr_cnt = null;
+	private Double avg_gr_avg = null;
+	private Double var_gr_avg = null;
+	private Double avg_gr_max = null;
+	private Double var_gr_max = null;
 	
 	public Double getAvg_length() {
 		return avg_length;
@@ -99,6 +126,162 @@ public class Score {
 	}
 	public void setVar_struct_type(Double var_struct_type) {
 		this.var_struct_type = var_struct_type;
+	}
+	public Double getAvg_cnt_char() {
+		return avg_cnt_char;
+	}
+	public void setAvg_cnt_char(Double avg_cnt_char) {
+		this.avg_cnt_char = avg_cnt_char;
+	}
+	public Double getVar_cnt_char() {
+		return var_cnt_char;
+	}
+	public void setVar_cnt_char(Double var_cnt_char) {
+		this.var_cnt_char = var_cnt_char;
+	}
+	public Double getAvg_cnt_syllable() {
+		return avg_cnt_syllable;
+	}
+	public void setAvg_cnt_syllable(Double avg_cnt_syllable) {
+		this.avg_cnt_syllable = avg_cnt_syllable;
+	}
+	public Double getVar_cnt_syllable() {
+		return var_cnt_syllable;
+	}
+	public void setVar_cnt_syllable(Double var_cnt_syllable) {
+		this.var_cnt_syllable = var_cnt_syllable;
+	}
+	public Double getAvg_cnt_modifier() {
+		return avg_cnt_modifier;
+	}
+	public void setAvg_cnt_modifier(Double avg_cnt_modifier) {
+		this.avg_cnt_modifier = avg_cnt_modifier;
+	}
+	public Double getVar_cnt_modifier() {
+		return var_cnt_modifier;
+	}
+	public void setVar_cnt_modifier(Double var_cnt_modifier) {
+		this.var_cnt_modifier = var_cnt_modifier;
+	}
+	public Double getAvg_awl() {
+		return avg_awl;
+	}
+	public void setAvg_awl(Double avg_awl) {
+		this.avg_awl = avg_awl;
+	}
+	public Double getVar_awl() {
+		return var_awl;
+	}
+	public void setVar_awl(Double var_awl) {
+		this.var_awl = var_awl;
+	}
+	public Double getAvg_variation_modifier() {
+		return avg_variation_modifier;
+	}
+	public void setAvg_variation_modifier(Double avg_variation_modifier) {
+		this.avg_variation_modifier = avg_variation_modifier;
+	}
+	public Double getVar_variation_modifier() {
+		return var_variation_modifier;
+	}
+	public void setVar_variation_modifier(Double var_variation_modifier) {
+		this.var_variation_modifier = var_variation_modifier;
+	}
+	public Double getAvg_variation_adv() {
+		return avg_variation_adv;
+	}
+	public void setAvg_variation_adv(Double avg_variation_adv) {
+		this.avg_variation_adv = avg_variation_adv;
+	}
+	public Double getVar_variation_adv() {
+		return var_variation_adv;
+	}
+	public void setVar_variation_adv(Double var_variation_adv) {
+		this.var_variation_adv = var_variation_adv;
+	}
+	public Double getAvg_variation_adj() {
+		return avg_variation_adj;
+	}
+	public void setAvg_variation_adj(Double avg_variation_adj) {
+		this.avg_variation_adj = avg_variation_adj;
+	}
+	public Double getVar_variation_adj() {
+		return var_variation_adj;
+	}
+	public void setVar_variation_adj(Double var_variation_adj) {
+		this.var_variation_adj = var_variation_adj;
+	}
+	public Double getAvg_cnt_cc() {
+		return avg_cnt_cc;
+	}
+	public void setAvg_cnt_cc(Double avg_cnt_cc) {
+		this.avg_cnt_cc = avg_cnt_cc;
+	}
+	public Double getVar_cnt_cc() {
+		return var_cnt_cc;
+	}
+	public void setVar_cnt_cc(Double var_cnt_cc) {
+		this.var_cnt_cc = var_cnt_cc;
+	}
+	public Double getAvg_cnt_sbar() {
+		return avg_cnt_sbar;
+	}
+	public void setAvg_cnt_sbar(Double avg_cnt_sbar) {
+		this.avg_cnt_sbar = avg_cnt_sbar;
+	}
+	public Double getVar_cnt_sbar() {
+		return var_cnt_sbar;
+	}
+	public void setVar_cnt_sbar(Double var_cnt_sbar) {
+		this.var_cnt_sbar = var_cnt_sbar;
+	}
+	public Double getAvg_cnt_compound() {
+		return avg_cnt_compound;
+	}
+	public void setAvg_cnt_compound(Double avg_cnt_compound) {
+		this.avg_cnt_compound = avg_cnt_compound;
+	}
+	public Double getVar_cnt_compound() {
+		return var_cnt_compound;
+	}
+	public void setVar_cnt_compound(Double var_cnt_compound) {
+		this.var_cnt_compound = var_cnt_compound;
+	}
+	public Double getAvg_gr_cnt() {
+		return avg_gr_cnt;
+	}
+	public void setAvg_gr_cnt(Double avg_gr_cnt) {
+		this.avg_gr_cnt = avg_gr_cnt;
+	}
+	public Double getVar_gr_cnt() {
+		return var_gr_cnt;
+	}
+	public void setVar_gr_cnt(Double var_gr_cnt) {
+		this.var_gr_cnt = var_gr_cnt;
+	}
+	public Double getAvg_gr_avg() {
+		return avg_gr_avg;
+	}
+	public void setAvg_gr_avg(Double avg_gr_avg) {
+		this.avg_gr_avg = avg_gr_avg;
+	}
+	public Double getVar_gr_avg() {
+		return var_gr_avg;
+	}
+	public void setVar_gr_avg(Double var_gr_avg) {
+		this.var_gr_avg = var_gr_avg;
+	}
+	public Double getAvg_gr_max() {
+		return avg_gr_max;
+	}
+	public void setAvg_gr_max(Double avg_gr_max) {
+		this.avg_gr_max = avg_gr_max;
+	}
+	public Double getVar_gr_max() {
+		return var_gr_max;
+	}
+	public void setVar_gr_max(Double var_gr_max) {
+		this.var_gr_max = var_gr_max;
 	}
 	
 }

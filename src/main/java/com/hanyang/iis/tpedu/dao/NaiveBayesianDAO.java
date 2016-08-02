@@ -24,125 +24,7 @@ public class NaiveBayesianDAO {
     private Map<String, Long> classifies = new HashMap<>();		//등급 몇개 있는지
     private Map<String, Map<String, Long>> counter = new HashMap<>();		//등립안에 개수 몇개
 
-    /*문장 길이 평균, 분산 점수 */
-    public Score getLengthScore(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-    		dataSet.add(dataList.get(i).getLength());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	
-    	scoreGrade.setAvg_length(avgData);    	
-    	scoreGrade.setVar_length(varData);    	
-    	
-    	return scoreGrade;
-    }
-    
-    /*어휘 점수 평균, 분산 점수 */
-    public Score getVocaScore(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-   			dataSet.add(dataList.get(i).getVoca_score());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	
-    	scoreGrade.setAvg_voca(avgData);    	
-    	scoreGrade.setVar_voca(varData);    	    	
-    	return scoreGrade;
-    }
-    
-    /*패턴 점수 평균, 분산 점수 */
-    public Score getPatternScore(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	ArrayList<Double> testSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-   			dataSet.add(dataList.get(i).getPattern_score());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	
-    	scoreGrade.setAvg_pattern(avgData);    	
-    	scoreGrade.setVar_pattern(varData); 
-    	
-    	return scoreGrade;
-    }
-    
-    /*단어 수 평균, 분산 점수 */
-    public Score getWordScore(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-    		dataSet.add(dataList.get(i).getWord());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	
-    	scoreGrade.setAvg_word_count(avgData);    	
-    	scoreGrade.setVar_word_count(varData); 
-    	
-    	return scoreGrade;
-    }
-    
-    /*형용사구 평균, 분산 점수 */
-    public Score getAdjpScore(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-    		dataSet.add(dataList.get(i).getCnt_adjp());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	
-    	scoreGrade.setAvg_adjp(avgData);    	
-    	scoreGrade.setVar_adjp(varData); 
-    	
-    	return scoreGrade;
-    }
-    
-    /*부사구 평균, 분산 점수 */
-    public Score getAdvpScore(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-    		dataSet.add(dataList.get(i).getCnt_advp());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	
-    	scoreGrade.setAvg_advp(avgData);    	
-    	scoreGrade.setVar_advp(varData); 
-    	
-    	return scoreGrade;
-    }
-    
-    /*구조 타입 평균, 분산 점수 */
-    public Score getStructType(ArrayList<Sentence> dataList, Score scoreGrade){
-    	ArrayList<Double> dataSet = new ArrayList<Double>();
-    	
-    	for(int i = 0; i < dataList.size(); i++){
-    		dataSet.add(dataList.get(i).getStruct_type());
-    	}
-    	
-    	Double avgData = getAvg(dataSet);
-    	Double varData = getStdv(dataSet);
-    	//System.out.println("Avg : " + avgData + "  Var : " + varData);
-    	
-    	scoreGrade.setAvg_struct_type(avgData);    	
-    	scoreGrade.setVar_struct_type(varData); 
-    	
-    	return scoreGrade;
-    }
+   
 
     /*가우시안 등급 계산*/
     public void gaussianCal(ArrayList<Sentence> testList, ArrayList<Score> gradeScore, int grade_count){
@@ -243,8 +125,22 @@ public class NaiveBayesianDAO {
     	ArrayList<Double[]> adjp = new ArrayList<Double[]>();
     	ArrayList<Double[]> pattern = new ArrayList<Double[]>();
     	ArrayList<Double[]> struct = new ArrayList<Double[]>();
+
+    	ArrayList<Double[]> avg_char = new ArrayList<Double[]>();
+    	ArrayList<Double[]> syllable = new ArrayList<Double[]>();
+    	ArrayList<Double[]> cnt_modifier = new ArrayList<Double[]>();
+    	ArrayList<Double[]> awl = new ArrayList<Double[]>();
+    	ArrayList<Double[]> variation_modifier = new ArrayList<Double[]>();
+    	ArrayList<Double[]> variation_adv = new ArrayList<Double[]>();
+    	ArrayList<Double[]> variation_adj = new ArrayList<Double[]>();
+    	ArrayList<Double[]> cc = new ArrayList<Double[]>();
+    	ArrayList<Double[]> sbar = new ArrayList<Double[]>();
+    	ArrayList<Double[]> compound = new ArrayList<Double[]>();
+    	ArrayList<Double[]> cnt_gr = new ArrayList<Double[]>();
+    	ArrayList<Double[]> avg_gr = new ArrayList<Double[]>();
+    	ArrayList<Double[]> max_gr = new ArrayList<Double[]>();
     	
-    	/* Grade 값 계산 */
+    	/* 각 리스트에 해당 값 담기 */
     	for(int j = 0; j < gradeScore.size(); j++){
     		Double[] temp = new Double[2];
     		temp = new Double[]{gradeScore.get(j).getAvg_length(), gradeScore.get(j).getVar_length()};
@@ -265,8 +161,48 @@ public class NaiveBayesianDAO {
     		temp = new Double[]{gradeScore.get(j).getAvg_pattern(), gradeScore.get(j).getVar_pattern()};
     		pattern.add(temp);
     		
-    		temp = new Double[]{gradeScore.get(j).getAvg_struct_type(), gradeScore.get(j).getAvg_struct_type()};
+    		temp = new Double[]{gradeScore.get(j).getAvg_struct_type(), gradeScore.get(j).getVar_struct_type()};
     		struct.add(temp);
+
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cnt_char(), gradeScore.get(j).getVar_cnt_char()};
+    		avg_char.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cnt_syllable(), gradeScore.get(j).getVar_cnt_syllable()};
+    		syllable.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cnt_modifier(), gradeScore.get(j).getVar_cnt_modifier()};
+    		cnt_modifier.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_awl(), gradeScore.get(j).getVar_awl()};
+    		awl.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_variation_modifier(), gradeScore.get(j).getVar_variation_modifier()};
+    		variation_modifier.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_variation_adv(), gradeScore.get(j).getVar_variation_adv()};
+    		variation_adv.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_variation_adj(), gradeScore.get(j).getVar_variation_adj()};
+    		variation_adj.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cnt_cc(), gradeScore.get(j).getVar_cnt_cc()};
+    		cc.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cnt_sbar(), gradeScore.get(j).getVar_cnt_sbar()};
+    		sbar.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cnt_compound(), gradeScore.get(j).getVar_cnt_compound()};
+    		compound.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_gr_cnt(), gradeScore.get(j).getVar_gr_cnt()};
+    		cnt_gr.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_gr_avg(), gradeScore.get(j).getVar_gr_avg()};
+    		avg_gr.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_gr_max(), gradeScore.get(j).getVar_gr_max()};
+    		max_gr.add(temp);
     		
     	}
     	sentence.setGrade_length(gradeClassification(length, sentence.getLength()));
@@ -276,6 +212,20 @@ public class NaiveBayesianDAO {
     	sentence.setGrade_cnt_adjp(gradeClassification(adjp, sentence.getCnt_adjp()));
     	sentence.setGrade_pattern_score(gradeClassification(pattern, sentence.getPattern_score()));
     	sentence.setGrade_struct_type(gradeClassification(struct, sentence.getStruct_type()));
+
+    	sentence.setGrade_avg_char(gradeClassification(avg_char, sentence.getAvg_char()));
+    	sentence.setGrade_avg_syllables(gradeClassification(syllable, sentence.getAvg_syllables()));
+    	sentence.setGrade_cnt_modifier(gradeClassification(cnt_modifier, sentence.getCnt_modifier()));
+    	sentence.setGrade_ratio_awl(gradeClassification(awl, sentence.getRatio_awl()));
+    	sentence.setGrade_var_modifier(gradeClassification(variation_modifier, sentence.getVar_modifier()));
+    	sentence.setGrade_var_adv(gradeClassification(variation_adv, sentence.getVar_adv()));
+    	sentence.setGrade_var_adj(gradeClassification(variation_adj, sentence.getVar_adj()));
+    	sentence.setGrade_cnt_cc(gradeClassification(cc, sentence.getCnt_cc()));
+    	sentence.setGrade_cnt_sbar(gradeClassification(sbar, sentence.getCnt_sbar()));
+    	sentence.setGrade_cnt_compound(gradeClassification(compound, sentence.getCnt_compound()));
+    	sentence.setGrade_cnt_gr(gradeClassification(cnt_gr, sentence.getCnt_gr()));
+    	sentence.setGrade_avg_dis_gr(gradeClassification(avg_gr, sentence.getAvg_dis_gr()));
+    	sentence.setGrade_max_dis_gr(gradeClassification(variation_adj, sentence.getMax_dis_gr()));
 
     	return sentence;
     }
@@ -314,22 +264,50 @@ public class NaiveBayesianDAO {
     	Double advp_var = td.calculation(gradeScore.getAvg_advp(), gradeScore.getVar_advp(), sentence.getCnt_advp());
     	Double struct_var = td.calculation(gradeScore.getAvg_struct_type(), gradeScore.getVar_struct_type(), sentence.getStruct_type());
     	
-    	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var;
+    	Double avg_char = td.calculation(gradeScore.getAvg_cnt_char(), gradeScore.getVar_cnt_char(), sentence.getAvg_char());
+    	Double syllable = td.calculation(gradeScore.getAvg_cnt_syllable(), gradeScore.getVar_cnt_syllable(), sentence.getAvg_syllables());
+    	Double cnt_modifier = td.calculation(gradeScore.getAvg_cnt_modifier(), gradeScore.getVar_cnt_modifier(), sentence.getCnt_modifier());
+    	Double awl = td.calculation(gradeScore.getAvg_awl(), gradeScore.getVar_awl(), sentence.getRatio_awl());
+    	Double variation_modifier = td.calculation(gradeScore.getAvg_variation_modifier(), gradeScore.getVar_variation_modifier(), sentence.getCnt_modifier());
+    	Double variation_adv = td.calculation(gradeScore.getAvg_variation_adv(), gradeScore.getVar_variation_adv(), sentence.getVar_adv());
+    	Double variation_adj = td.calculation(gradeScore.getAvg_variation_adj(), gradeScore.getVar_variation_adj(), sentence.getVar_adj());
+    	Double cc = td.calculation(gradeScore.getAvg_cnt_cc(), gradeScore.getVar_cnt_cc(), sentence.getCnt_cc());
+    	Double sbar = td.calculation(gradeScore.getAvg_cnt_sbar(), gradeScore.getVar_cnt_sbar(), sentence.getCnt_sbar());
+    	Double compound = td.calculation(gradeScore.getAvg_cnt_compound(), gradeScore.getVar_cnt_compound(), sentence.getCnt_compound());
+    	Double cnt_gr = td.calculation(gradeScore.getAvg_gr_cnt(), gradeScore.getVar_gr_cnt(), sentence.getCnt_gr());
+    	Double avg_gr = td.calculation(gradeScore.getAvg_gr_avg(), gradeScore.getVar_gr_avg(), sentence.getAvg_dis_gr());
+    	Double max_gr = td.calculation(gradeScore.getAvg_gr_max(), gradeScore.getVar_gr_max(), sentence.getMax_dis_gr());
     	
+    	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var;
+    	//avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr;
     	return result;
     }
     
     /*Grade 별 평균, 분산값 집어넣기 */
     public Score setScore(ArrayList<Sentence> list_grade, Score scoreGrade){
-    	NaiveBayesianDAO nb = new NaiveBayesianDAO();
+    	ScoreDAO sc = new ScoreDAO();
     	
-    	scoreGrade = nb.getLengthScore(list_grade, scoreGrade);
-    	scoreGrade = nb.getVocaScore(list_grade, scoreGrade);
-    	scoreGrade = nb.getPatternScore(list_grade, scoreGrade);
-    	scoreGrade = nb.getWordScore(list_grade, scoreGrade);
-    	scoreGrade = nb.getAdjpScore(list_grade, scoreGrade);
-    	scoreGrade = nb.getAdvpScore(list_grade, scoreGrade);
-    	scoreGrade = nb.getStructType(list_grade, scoreGrade);
+    	scoreGrade = sc.getLengthScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getVocaScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getPatternScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getWordScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getAdjpScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getAdvpScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getStructType(list_grade, scoreGrade);
+
+    	scoreGrade = sc.getCharScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getSyllableScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getCntModifierScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getAWLScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getVariationModifierScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getVariationAdvScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getVariationAdjScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getCCScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getSBARScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getCompoundScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getCntGRScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getAvgGRScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getMaxGRScore(list_grade, scoreGrade);
     	
     	return scoreGrade;
     }
@@ -398,41 +376,7 @@ public class NaiveBayesianDAO {
     	
     }
 
-    public Double getAvg(ArrayList<Double> dataSet){
-    	Double result = null;
-    	Double sumData = 0.0;
-    	for(int i = 0; i < dataSet.size(); i++){
-    		if(dataSet.get(i) == null){
-    			break;
-    		}
-    		sumData += dataSet.get(i);
-    	}
-    	result = sumData / dataSet.size();
-    	
-    	return result;
-    }
-    
-    public Double getStdv(ArrayList<Double> dataSet){
-	   	Double result = null;
-	   	Double sumData = 0.0;
-	   	int dataSize = dataSet.size();
-	   	Double avgData = getAvg(dataSet);
-	   
-	   	if(dataSize > 2){
-		   	int i = 0; 
-		   	for(i = 0; i < dataSize; i++){
-			   	if(dataSet.get(i) == null){
-			   		break;
-			   	}
-			   	Double diff = dataSet.get(i) - avgData;
-			   	sumData += Math.pow(diff, 2);
-		   	}
-	   	}
-	   	result = sumData / dataSize;
-	   
-	   	return Math.sqrt(result);
-   	}
-   
+
    	/* Sentence Score 
    	public Sentence getSentenceScore(String sentence){
    		Sentence str = new Sentence();
