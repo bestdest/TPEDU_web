@@ -53,6 +53,7 @@ public class TPEController {
 	@RequestMapping(value="/result.do")
 	public String result(HttpServletRequest request, Locale locale,
 			@RequestParam (value="search_txt" ,required=false, defaultValue = "") String search_txt, 
+			@RequestParam (value="is_sentence" ,required=false, defaultValue = "1") String is_sentence, 		//1: 문장 2: 문단
 			Model model) throws IOException, InterruptedException{
 
 		Date date = new Date();
@@ -60,6 +61,23 @@ public class TPEController {
 		String formattedDate = dateFormat.format(date);
 		System.out.println("검색시작시간 : " + formattedDate);
 		
+		date = new Date();
+		dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		formattedDate = dateFormat.format(date);
+		
+		if(is_sentence.equals("1")){
+			searchSentence(search_txt, model);
+		}else{
+			searchParagraph(search_txt, model);
+		}
+		
+		System.out.println("결과나온시간 : " + formattedDate);
+		
+		return "/result";
+	}
+	
+	/*문장 검색시 */
+	public void searchSentence(String search_txt, Model model) throws IOException, InterruptedException{
 		/*
 		 * Sentence Score 지정해주는 함수 호출
 		 * */
@@ -135,36 +153,136 @@ public class TPEController {
 		default: grade_txt = "초등"; break;
 		}
 		
-		date = new Date();
-		dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		formattedDate = dateFormat.format(date);
+		model.addAttribute("input_txt", search_txt);
+		model.addAttribute("grade", grade_txt);
+		model.addAttribute("mlp_grade", grade_txt_mlp);
+		model.addAttribute("svm_grade", grade_txt_svm);
+		model.addAttribute("naive_grade", grade_txt_naive);
+		/*model.addAttribute("sentence_word", Sentence.getGrade_word()+1);
+		model.addAttribute("sentence_advp", Sentence.getGrade_cnt_advp()+1);
+		model.addAttribute("sentence_adjp", Sentence.getGrade_cnt_adjp()+1);
+		model.addAttribute("sentence_pattern", Sentence.getGrade_pattern_score()+1);
+		model.addAttribute("sentence_length", Sentence.getGrade_length()+1);
+		model.addAttribute("sentence_struct_type", Sentence.getGrade_struct_type()+1);
+		model.addAttribute("sentence_voca", Sentence.getGrade_voca_score()+1);*/
+		model.addAttribute("sentence_feature1", Sentence.getGrade_voca_score()+1);
+		model.addAttribute("sentence_feature2", Sentence.getGrade_pattern_score()+1);
+		model.addAttribute("sentence_feature3", Sentence.getGrade_cnt_modifier()+1);
+		model.addAttribute("sentence_feature4", Sentence.getGrade_struct_type()+1);
+		model.addAttribute("sentence_feature5", Sentence.getGrade_avg_syllables()+1);
+		model.addAttribute("sentence_feature6", Sentence.getGrade_avg_char()+1);
 		
-		System.out.println("결과나온시간 : " + formattedDate);
-		System.out.println("result : " + grade_txt_svm);
+		model.addAttribute("sentence_feature1_str", "단어점수");
+		model.addAttribute("sentence_feature2_str", "패턴복잡도");
+		model.addAttribute("sentence_feature3_str", "수식어수");
+		model.addAttribute("sentence_feature4_str", "구조점수");
+		model.addAttribute("sentence_feature5_str", "평균음절수");	//단어당 평균음절수
+		model.addAttribute("sentence_feature6_str", "평균단어수");	//단어당 평균단어수
+		
+		model.addAttribute("sentence", Sentence);
+	}
+	
+	/*문단 검색시 */
+	public void searchParagraph(String search_txt, Model model) throws IOException, InterruptedException{
+		/*
+		 * Sentence Score 지정해주는 함수 호출
+		 * */
+		
+		search_txt = search_txt.trim();
+		Sentence Sentence = getFeatureScore(search_txt);
+		
+		/*
+		 * Sentence Score 값을 등급별로 계산해주는 함수 호출 _MLP
+		 * return 0 : 초등 1 : 중등 2 : 고등
+		 * */
+		MLPController mlpdao = new MLPController();
+		int grade_mlp = mlpdao.getMLPResult(Sentence);
+		
+		/*
+		 * Sentence Score 값을 등급별로 계산해주는 함수 호출 _SVM
+		 * return 0 : 초등 1 : 중등 2 : 고등
+		 * */
+		svm_predict_sentence svmdao = new svm_predict_sentence();
+		int grade_svm = svmdao.getSVMResult(Sentence);
+		
+		/*
+		 * Sentence Score 값을 등급별로 계산해주는 함수 호출 _ Naive 
+		 * return 0 : 초등 1 : 중등 2 : 고등
+		 * */
+		Sentence = naivedao.getResult(search_txt, Sentence);
+		int grade_naive = Sentence.getGrade();
+		
+		/*MLP*/
+		String grade_txt_mlp = "초등";
+		
+		switch(grade_mlp){
+		case 0: grade_txt_mlp = "초등"; break;
+		case 1: grade_txt_mlp = "중등"; break;
+		case 2: grade_txt_mlp = "고등"; break;
+		default: grade_txt_mlp = "초등"; break;
+		}
+		
+		/*SVM*/
+		String grade_txt_svm = "초등";
+		
+		switch(grade_svm){
+		case 0: grade_txt_svm = "초등"; break;
+		case 1: grade_txt_svm = "중등"; break;
+		case 2: grade_txt_svm = "고등"; break;
+		default: grade_txt_svm = "초등"; break;
+		}
+		
+		/*Naive*/
+		String grade_txt_naive = "초등";
+		
+		switch(grade_naive){
+		case 0: grade_txt_naive = "초등"; break;
+		case 1: grade_txt_naive = "중등"; break;
+		case 2: grade_txt_naive = "고등"; break;
+		default: grade_txt_naive = "초등"; break;
+		}
+		
+		/*Total*/
+		String grade_txt = "초등";
+		
+		switch(grade_mlp+grade_svm+grade_naive){
+		case 0 : 
+		case 1 : 
+			grade_txt = "초등"; break;
+		case 2: 
+		case 3: 
+		case 4: 
+			grade_txt = "중등"; break;
+		case 5: 
+		case 6: 
+			grade_txt = "고등"; break;
+		default: grade_txt = "초등"; break;
+		}
 		
 		model.addAttribute("input_txt", search_txt);
 		model.addAttribute("grade", grade_txt);
 		model.addAttribute("mlp_grade", grade_txt_mlp);
 		model.addAttribute("svm_grade", grade_txt_svm);
 		model.addAttribute("naive_grade", grade_txt_naive);
-		model.addAttribute("sentence_word", Sentence.getGrade_word()+1);
-		model.addAttribute("sentence_advp", Sentence.getGrade_cnt_advp()+1);
-		model.addAttribute("sentence_adjp", Sentence.getGrade_cnt_adjp()+1);
-		model.addAttribute("sentence_pattern", Sentence.getGrade_pattern_score()+1);
-		model.addAttribute("sentence_length", Sentence.getGrade_length()+1);
-		model.addAttribute("sentence_struct_type", Sentence.getGrade_struct_type()+1);
-		model.addAttribute("sentence_voca", Sentence.getGrade_voca_score()+1);
+		model.addAttribute("sentence_feature1", Sentence.getGrade_voca_score()+1);
+		model.addAttribute("sentence_feature2", Sentence.getGrade_pattern_score()+1);
+		model.addAttribute("sentence_feature3", Sentence.getGrade_var_modifier()+1);
+		model.addAttribute("sentence_feature4", Sentence.getGrade_struct_type()+1);
+		model.addAttribute("sentence_feature5", Sentence.getGrade_ttr()+1);
+		model.addAttribute("sentence_feature6", Sentence.getGrade_cli()+1);
+		
+		model.addAttribute("sentence_feature1_str", "단어점수");
+		model.addAttribute("sentence_feature2_str", "패턴복잡도");
+		model.addAttribute("sentence_feature3_str", "수식어수");
+		model.addAttribute("sentence_feature4_str", "구조점수");
+		model.addAttribute("sentence_feature5_str", "유사단어비율");
+		model.addAttribute("sentence_feature6_str", "가독성점수");
+		
 		model.addAttribute("sentence", Sentence);
-		/*model.addAttribute("sentence_word", Sentence.getWord());
-		model.addAttribute("sentence_advp", Sentence.getCnt_advp());
-		model.addAttribute("sentence_adjp", Sentence.getCnt_adjp());
-		model.addAttribute("sentence_pattern", Sentence.getPattern_score());
-		model.addAttribute("sentence_length", Sentence.getLength());
-		model.addAttribute("sentence_struct_type", Sentence.getStruct_type());
-		model.addAttribute("sentence_voca", Sentence.getVoca_score());*/
-		return "/result";
 	}
 	
+	
+	/*Feature Score 구하기*/
 	public Sentence getFeatureScore(String sentence){
 		int sentence_count = 3;
 		Sentence re = new Sentence();
@@ -202,6 +320,27 @@ public class TPEController {
 		double struct_var = 0.0;
 		double word_var = 0.0;
 		double voca_var = 0.0;
+		
+		double avg_char = 0.0;
+    	double syllable = 0.0;
+    	double cnt_modifier = 0.0;
+    	double awl = 0.0;
+    	double variation_modifier = 0.0; 
+    	double variation_adv = 0.0;
+    	double variation_adj = 0.0;
+    	double cc = 0.0;
+    	double sbar = 0.0;
+    	double compound = 0.0;
+    	double cnt_gr = 0.0;
+    	double avg_gr = 0.0;
+    	double max_gr = 0.0;
+
+    	double num_sen = 0.0;
+    	double ttr = 0.0;
+    	double cli = 0.0;
+    	double lix = 0.0;
+		
+		
 		for(Sentence data : datas){
 			leng_var =+ data.getLength();
 			adjp_var =+ data.getCnt_adjp();
@@ -210,7 +349,28 @@ public class TPEController {
 			struct_var =+ data.getStruct_type();
 			word_var =+ data.getWord();
 			voca_var =+ data.getVoca_score();
+			
+			avg_char = data.getAvg_char();
+	    	syllable = data.getAvg_syllables();
+	    	cnt_modifier = data.getCnt_modifier();
+	    	awl = data.getRatio_awl();
+	    	variation_modifier = data.getVar_modifier(); 
+	    	variation_adv = data.getVar_adv();
+	    	variation_adj = data.getVar_adj();
+	    	cc = data.getCnt_cc();
+	    	sbar = data.getCnt_sbar();
+	    	compound = data.getCnt_compound();
+	    	cnt_gr = data.getCnt_gr();
+	    	avg_gr = data.getAvg_dis_gr();
+	    	max_gr = data.getMax_dis_gr();
+
+	    	num_sen = data.getNum_sen();
+	    	ttr = data.getTtr();
+	    	cli = data.getCli();
+	    	lix = data.getLix();
 		}
+		
+		/*문단의 문장 갯수를 각 변수의 합에 나눠서 평균 구하기*/
 		sentence_count = datas.size();
 		re.setLength(leng_var/sentence_count);
 		re.setCnt_advp(advp_var/sentence_count);
@@ -219,6 +379,26 @@ public class TPEController {
 		re.setStruct_type(struct_var/sentence_count);
 		re.setWord(word_var/sentence_count);
 		re.setVoca_score(voca_var/sentence_count);
+
+		re.setAvg_char(avg_char/sentence_count);
+		re.setAvg_syllables(syllable/sentence_count);
+		re.setCnt_modifier(cnt_modifier/sentence_count);
+		re.setRatio_awl(awl/sentence_count);
+		re.setVar_modifier(variation_modifier/sentence_count);
+		re.setVar_adv(variation_adv/sentence_count);
+		re.setVar_adj(variation_adj/sentence_count);
+		
+		re.setCnt_cc(cc/sentence_count);
+		re.setCnt_sbar(sbar/sentence_count);
+		re.setCnt_compound(compound/sentence_count);
+		re.setCnt_gr(cnt_gr/sentence_count);
+		re.setAvg_dis_gr(avg_gr/sentence_count);
+		re.setMax_dis_gr(max_gr/sentence_count);
+
+		re.setNum_sen(num_sen/sentence_count);
+		re.setTtr(ttr/sentence_count);
+		re.setCli(cli/sentence_count);
+		re.setLix(lix/sentence_count);
 		
 		return re; 
 	}

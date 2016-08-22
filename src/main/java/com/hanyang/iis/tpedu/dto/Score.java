@@ -42,6 +42,15 @@ public class Score {
 	private Double var_gr_avg = null;
 	private Double avg_gr_max = null;
 	private Double var_gr_max = null;
+
+	private Double avg_num_sen = null;
+	private Double var_num_sen = null;
+	private Double avg_ttr = null;
+	private Double var_ttr = null;
+	private Double avg_cli = null;
+	private Double var_cli = null;
+	private Double avg_lix = null;
+	private Double var_lix = null;
 	
 	public Double getAvg_length() {
 		return avg_length;
@@ -282,6 +291,54 @@ public class Score {
 	}
 	public void setVar_gr_max(Double var_gr_max) {
 		this.var_gr_max = var_gr_max;
+	}
+	public Double getAvg_num_sen() {
+		return avg_num_sen;
+	}
+	public void setAvg_num_sen(Double avg_num_sen) {
+		this.avg_num_sen = avg_num_sen;
+	}
+	public Double getVar_num_sen() {
+		return var_num_sen;
+	}
+	public void setVar_num_sen(Double var_num_sen) {
+		this.var_num_sen = var_num_sen;
+	}
+	public Double getAvg_ttr() {
+		return avg_ttr;
+	}
+	public void setAvg_ttr(Double avg_ttr) {
+		this.avg_ttr = avg_ttr;
+	}
+	public Double getVar_ttr() {
+		return var_ttr;
+	}
+	public void setVar_ttr(Double var_ttr) {
+		this.var_ttr = var_ttr;
+	}
+	public Double getAvg_cli() {
+		return avg_cli;
+	}
+	public void setAvg_cli(Double avg_cli) {
+		this.avg_cli = avg_cli;
+	}
+	public Double getVar_cli() {
+		return var_cli;
+	}
+	public void setVar_cli(Double var_cli) {
+		this.var_cli = var_cli;
+	}
+	public Double getAvg_lix() {
+		return avg_lix;
+	}
+	public void setAvg_lix(Double avg_lix) {
+		this.avg_lix = avg_lix;
+	}
+	public Double getVar_lix() {
+		return var_lix;
+	}
+	public void setVar_lix(Double var_lix) {
+		this.var_lix = var_lix;
 	}
 	
 }

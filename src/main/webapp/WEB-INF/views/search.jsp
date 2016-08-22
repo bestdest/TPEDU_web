@@ -68,12 +68,15 @@
 						
 						<form name="s_form" onsubmit="return false;" method="post" action="result.do">
 							<!-- <input type="text" id="search_txt" name="search_txt" style="width:600px; height:45px; color: black;"> -->
-							<div style="float:left;">
-								<textarea id="search_txt" name="search_txt" rows="5" cols="80" style="color: black;background-color: rgb(250, 255, 255);"></textarea>
+							<div style="float:center;">
+								<textarea id="search_txt" name="search_txt" rows="5" cols="60" style="color: black;max-height: 300px; width:100%; background-color: rgb(250, 255, 255);"></textarea>
+								<br/>
+								<div style="float:right">
+									<input type="radio" name="is_sentence" id="sentence" value="1" checked="checked"><label for="sentence">문장</label>
+									<input type="radio" name="is_sentence" id="paragraph" value="2" ><label for="paragraph">문단</label>
+									<span><a href="#" id="search_btn" class="btn btn-default btn-lg">Submit</a></span>
+								</div>
 							</div>
-							<div>
-							</div>
-							<span><a href="#" id="search_btn" class="btn btn-default btn-lg">Submit</a></span>
 						</form>
                     </div>
                 </div>

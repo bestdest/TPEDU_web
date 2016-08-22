@@ -25,6 +25,10 @@ public class Sentence {
 	private double avg_dis_gr;			//GR 간의 평균 거리
 	private double max_dis_gr;			//GR 간의 최대 거리
 	
+	private double num_sen;			//문단의 문장 개수
+	private double ttr;				//구성 성분간의 문법적 관계
+	private double cli;			//GR 간의 평균 거리
+	private double lix;			//GR 간의 최대 거리
 	
 	private byte grade_length;
 	private byte grade_struct_type;
@@ -48,6 +52,11 @@ public class Sentence {
 	private byte grade_cnt_gr;				//구성 성분간의 문법적 관계
 	private byte grade_avg_dis_gr;			//GR 간의 평균 거리
 	private byte grade_max_dis_gr;			//GR 간의 최대 거리
+
+	private byte grade_num_sen;				//문단의 문장 개수
+	private byte grade_ttr;				//구성 성분간의 문법적 관계
+	private byte grade_cli;			//GR 간의 평균 거리
+	private byte grade_lix;			//GR 간의 최대 거리
 
 	public byte getGrade_length() {
 		return grade_length;
@@ -301,5 +310,56 @@ public class Sentence {
 	public void setGrade_max_dis_gr(byte grade_max_dis_gr) {
 		this.grade_max_dis_gr = grade_max_dis_gr;
 	}
+	public double getNum_sen() {
+		return num_sen;
+	}
+	public void setNum_sen(double num_sen) {
+		this.num_sen = num_sen;
+	}
+	
+	public double getTtr() {
+		return ttr;
+	}
+	public void setTtr(double ttr) {
+		this.ttr = ttr;
+	}
+	public double getCli() {
+		return cli;
+	}
+	public void setCli(double cli) {
+		this.cli = cli;
+	}
+	public double getLix() {
+		return lix;
+	}
+	public void setLix(double lix) {
+		this.lix = lix;
+	}
+	
+	public byte getGrade_num_sen() {
+		return grade_num_sen;
+	}
+	public void setGrade_num_sen(byte grade_num_sen) {
+		this.grade_num_sen = grade_num_sen;
+	}
+	public byte getGrade_ttr() {
+		return grade_ttr;
+	}
+	public void setGrade_ttr(byte grade_ttr) {
+		this.grade_ttr = grade_ttr;
+	}
+	public byte getGrade_cli() {
+		return grade_cli;
+	}
+	public void setGrade_cli(byte grade_cli) {
+		this.grade_cli = grade_cli;
+	}
+	public byte getGrade_lix() {
+		return grade_lix;
+	}
+	public void setGrade_lix(byte grade_lix) {
+		this.grade_lix = grade_lix;
+	}
+	
 	
 }

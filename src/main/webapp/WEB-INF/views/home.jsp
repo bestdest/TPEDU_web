@@ -53,7 +53,12 @@
 		        yAxis: {
 		            gridLineInterpolation: 'polygon',
 		            lineWidth: 0,
-		            min: 0
+		            labels: {
+		                formatter: function() {
+		                    return '';
+		                }
+		            },
+		            min: 1
 		        },
 		
 		        tooltip: {
@@ -72,9 +77,9 @@
 		
 		        series: [{
 		            name: 'Sentence Features',
-		            data: [0, 5, 3, 5, '${sentence_voca}'*1, 1],
+		            data: [0, 5, 3, 5, 1, 1],
 		            //data: data_s,
-		            data: ['${sentence_word}'*1, '${sentence_length}'*1, '${sentence_advp}'*1, '${sentence_adjp}'*1, '${sentence_pattern}'*1, '${sentence_voca}'*1	],
+		            //data: ['${sentence_word}'*1, '${sentence_length}'*1, '${sentence_advp}'*1, '${sentence_adjp}'*1, '${sentence_pattern}'*1, '${sentence_voca}'*1	],
 		            color: 'red',
 		            pointPlacement: 'off'
 		        }]

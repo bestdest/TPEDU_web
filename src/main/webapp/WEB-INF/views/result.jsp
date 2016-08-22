@@ -59,6 +59,23 @@
     color: #FFF;
     text-shadow: none;
 }
+div.feature {
+	font-size: 17px;
+	margin: 0 0 5px 0;
+	text-transform: uppercase;
+	font-weight: 400;
+	font-family: 'Montserrat', sans-serif;
+	margin-bottom: 15px;
+}
+div.feature span{
+	font-size: 14px;
+	margin: 0 0 5px 0;
+	text-transform: uppercase;
+	font-weight: 400;
+	color: #888888;
+	font-family: 'Montserrat', sans-serif;
+	padding-left: 15px;
+}
 </style>
 </head>
 <body>
@@ -80,72 +97,121 @@
 	<section class="main-section team" id="team"><!--main-section team-start-->
 	<div class="container">
         <h2>결과</h2>
-        <h6>////////////////////////////////////</h6>
+        <h6><hr/></h6>
         <h6>입력하신 문장 : [ ${input_txt } ]</h6>
-        
-        <!-- Chart 영역 -->
-		<div id="container" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto">
-		<script type="text/javascript">
-		$(function () {
-		
-		    $('#container').highcharts({
-		
-		        chart: {
-		            polar: true,
-		            type: 'line'
-		        },
-		
-		        title: {
-		        	align: "center",
-		            text: 'TPEDU',
-		            x: 0,
-		            style: { "color": "#333333", "fontSize": "22px" }
-		        },
-		
-		        pane: {
-		            size: '80%'
-		        },
-		
-		        xAxis: {
-		            categories: ['Word of Count', 'Sentence Length', 'Count of Advp', 'Count of Adjp',
-		                    'Sentence Pattern', 'Voca Score'],
-		            tickmarkPlacement: 'on',
-		            lineWidth: 0
-		        },
-		
-		        yAxis: {
-		            gridLineInterpolation: 'polygon',
-		            lineWidth: 0,
-		            min: 0
-		        },
-		
-		        tooltip: {
-		            shared: true,
-		            pointFormat: '<span style="color:{series.color}">{point.y} <b></b><br/>'
-		        },
-		
-		        legend: {
-		            align: 'right',
-		            verticalAlign: 'top',
-		            borderColor: "#909090",
-		            enabled: false,
-		            y: 70,
-		            layout: 'vertical'
-		        },
-		
-		        series: [{
-		            name: 'Sentence Features',
-		            data: ['${sentence_word}'*1, '${sentence_length}'*1, '${sentence_advp}'*1, '${sentence_adjp}'*1, '${sentence_pattern}'*1, '${sentence_voca}'*1	],
-		            pointPlacement: 'off'
-		        }]
+        <div style="height: 660px;">
+	        <!-- Chart 영역 -->
+			<div id="spider-chart" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto; float:left;">
+			<script type="text/javascript">
+			$(function () {
+			
+			    $('#spider-chart').highcharts({
+			
+			        chart: {
+			            polar: true,
+			            type: 'line'
+			        },
+			
+			        title: {
+			        	align: "center",
+			            text: 'TPEDU',
+			            x: 0,
+			            style: { "color": "#333333", "fontSize": "22px" }
+			        },
+			
+			        pane: {
+			            size: '80%'
+			        },
+			
+			        xAxis: {
+			            categories: ['${sentence_feature1_str}', '${sentence_feature2_str}', '${sentence_feature3_str}', '${sentence_feature4_str}', '${sentence_feature5_str}', '${sentence_feature6_str}'	],
+			            tickmarkPlacement: 'on',
+			            lineWidth: 0
+			        },
+			
+			        yAxis: {
+			            gridLineInterpolation: 'polygon',
+			            lineWidth: 0,
+			            labels: {
+			                formatter: function() {
+			                    return '';
+			                }
+			            },
+			            min: 0
+			        },
+			
+			        tooltip: {
+			            shared: true,
+			            formatter: function() {
+			            	var tmp_str = '초급';
+			            	if(this.y == 2){
+			            		tmp_str = '중급';
+			            	}else if(this.y == 3){
+			            		tmp_str = '고급';
+			            	}
+			                //return 'The value for <b>' + this.x + '</b> is <b>' + this.y + '</b>, in series '+ this.series.name;
+			                return '<span style="color:{series.color}">'+this.x+' : '+tmp_str+'<b></b><br/>';
+			            }
+			        },
+			
+			        legend: {
+			            align: 'right',
+			            verticalAlign: 'top',
+			            borderColor: "#909090",
+			            enabled: false,
+			            y: 70,
+			            layout: 'vertical'
+			        },
+			
+			        series: [{
+			            name: 'Sentence Features',
+			            data: ['${sentence_feature1}'*1, '${sentence_feature2}'*1, '${sentence_feature3}'*1, '${sentence_feature4}'*1, '${sentence_feature5}'*1, '${sentence_feature6}'*1	],		//voca score, patter_score, modifire, struct_type, ttr, cli
+			            pointPlacement: 'off'
+			        }]
+					
+			    });
+			});
+			</script>
+			</div>   
+			 <!-- 설명영역 -->
+			<div style=" width: 590px;; min-width: 400px; max-width: 600px; height: auto; border: 2px solid gray; border-radius: 10px;  float:right; padding:20px;">
+				<div class="feature"> * 문장 개수: 7개 <br></div>
+				<div class="feature"> * 평균 문장 길이 : 6개 	<br></div> 
+				<div class="feature"> * 평균 단어 개수 : 8개 	<br></div>
+				<div class="feature"> 
+					* 수식어 평균 개수 (전체 : 9.24)<br> 
+					<span> - 수식어1 : 10 개<br>	</span> 
+					<span> - 수식어2 : 10 개<br>	</span> 
+					<span> - 수식어3 : 10 개<br>	</span> 
+					<span> - 수식어4 : 8 개<br>	</span> 
+					<span> - 수식어5 : 10 개<br>	</span> 
+				</div>
 				
-		    });
-		});
-		</script>
-		
-		</div>        
+				<div class="feature"> 
+					* 문장 구조 점수 : 3.123점 <br>
+					<span>
+					- 1: 단문, 2: 중문, 3: 복문, 4: 중복문<br>
+					</span>
+				</div>
+				<div class="feature"> 
+					* 단어 점수 : 2.356점 <br>
+					<span>- Collins Dictionary 에 나온 단어 기준 <br></span>
+					<span> (http://collinsdictionary.com/dictionary)<br></span>
+				</div>
+				<div class="feature"> * 문장 유사 단어 사용비율 : 0.8 (동일하지않은 단어수 / 전체 단어 수)<br></div>
+				<div class="feature"> 
+					* 문장 가독성 점수(Coleman-Liau Index) : 0.235    <br>
+					<span>	- CLI = 0.0588L - 0.296S - 15.8	<br></span>
+					<span>	- L : 글자수 / 단어수 * 100 (100개 단어당 평균 글자 수)	<br></span>
+					<span>	- S : 문장수 / 단어수 * 100 (100개 단어당 문장 개수)	</span>	
+				</div>
+				<div>  </div>
+				
+			</div>   
+		</div>
+		<h6><hr/></h6>
         <div class="team-leader-block clearfix">
-            <div class="team-leader-box">
+            <div class="team-leader-box" style="margin-top:20px;">
                 <div class="team-leader wow fadeInDown delay-03s"> 
                     <div class="team-leader-shadow"><a href="#"></a></div>
                     <h1>MLP</h1>
@@ -157,7 +223,7 @@
                 <span class="wow fadeInDown delay-03s">예상 적중 확률 : 88%</span>
                 <p class="wow fadeInDown delay-03s">예상 결과 : ${mlp_grade }</p>
             </div>
-            <div class="team-leader-box">
+            <div class="team-leader-box" style="margin-top:20px;">
                 <div class="team-leader  wow fadeInDown delay-06s"> 
                     <div class="team-leader-shadow"><a href="#"></a></div>
                     <h1>SVM</h1>
@@ -169,7 +235,7 @@
                 <span class="wow fadeInDown delay-06s">예상 적중 확률 : 77%</span>
                 <p class="wow fadeInDown delay-06s">예상 결과 : ${svm_grade }</p>
             </div>
-            <div class="team-leader-box">
+            <div class="team-leader-box" style="margin-top:20px;">
                 <div class="team-leader wow fadeInDown delay-09s"> 
                     <div class="team-leader-shadow"><a href="#"></a></div>
                     <h1>NAIVE</h1>

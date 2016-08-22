@@ -191,7 +191,7 @@ public class TrainingDataSelect {
     	//d =  1 / Math.sqrt(2 * Math.PI * stdev) * Math.exp((- Math.pow((e2 - avg),2) / 2 * stdev));
     	//d = (1 / (Math.sqrt(2 * Math.PI) * stdev)) * Math.exp(-(Math.pow(e2 - avg, 2) / 2 * Math.pow(stdev, 2)));
     	d = (1 / (Math.sqrt(2 * Math.PI) * stdev)) * d1;
-    	
+    	if (Double.isNaN(d)){d = 1.0;}
     	return d;
     }
     /*public Double calculation2(double avg, double stdev, double e2){
@@ -222,16 +222,36 @@ public class TrainingDataSelect {
 			String[] s;
 
 			while ((s = reader.readNext()) != null) {
+				int i = 0;
 				if(grade == -1 || s[0].equals(grade+"")){
 					Sentence sentence = new Sentence();
-					sentence.setGrade(Integer.parseInt(s[0]));
-					sentence.setStruct_type(Double.parseDouble(s[1]));
-					sentence.setCnt_advp(Double.parseDouble(s[2]));
-					sentence.setCnt_adjp(Double.parseDouble(s[3]));
-					sentence.setLength(Double.parseDouble(s[4]));
-					sentence.setWord(Double.parseDouble(s[5]));
-					sentence.setVoca_score(Double.parseDouble(s[6]));
-					sentence.setPattern_score(Double.parseDouble(s[7]));
+					sentence.setGrade(Integer.parseInt(s[i]));
+					sentence.setStruct_type(Double.parseDouble(s[++i]));
+					sentence.setCnt_advp(Double.parseDouble(s[++i]));
+					sentence.setCnt_adjp(Double.parseDouble(s[++i]));
+					sentence.setCnt_modifier(Double.parseDouble(s[++i]));
+					sentence.setLength(Double.parseDouble(s[++i]));
+					sentence.setWord(Double.parseDouble(s[++i]));
+					sentence.setAvg_char(Double.parseDouble(s[++i]));
+					sentence.setAvg_syllables(Double.parseDouble(s[++i]));
+					sentence.setVoca_score(Double.parseDouble(s[++i]));
+					sentence.setPattern_score(Double.parseDouble(s[++i]));
+
+					sentence.setRatio_awl(Double.parseDouble(s[++i]));
+					sentence.setVar_modifier(Double.parseDouble(s[++i]));
+					sentence.setVar_adv(Double.parseDouble(s[++i]));
+					sentence.setVar_adj(Double.parseDouble(s[++i]));
+					sentence.setCnt_cc(Double.parseDouble(s[++i]));
+					sentence.setCnt_sbar(Double.parseDouble(s[++i]));
+					sentence.setCnt_compound(Double.parseDouble(s[++i]));
+					sentence.setCnt_gr(Double.parseDouble(s[++i]));
+					sentence.setAvg_dis_gr(Double.parseDouble(s[++i]));
+					sentence.setMax_dis_gr(Double.parseDouble(s[++i]));
+
+					sentence.setNum_sen(Double.parseDouble(s[++i]));
+					sentence.setTtr(Double.parseDouble(s[++i]));
+					sentence.setCli(Double.parseDouble(s[++i]));
+					sentence.setLix(Double.parseDouble(s[++i]));
 					data.add(sentence);
 				}
 			}

@@ -139,6 +139,11 @@ public class NaiveBayesianDAO {
     	ArrayList<Double[]> cnt_gr = new ArrayList<Double[]>();
     	ArrayList<Double[]> avg_gr = new ArrayList<Double[]>();
     	ArrayList<Double[]> max_gr = new ArrayList<Double[]>();
+
+    	ArrayList<Double[]> num_sen = new ArrayList<Double[]>();
+    	ArrayList<Double[]> ttr = new ArrayList<Double[]>();
+    	ArrayList<Double[]> cli = new ArrayList<Double[]>();
+    	ArrayList<Double[]> lix = new ArrayList<Double[]>();
     	
     	/* 각 리스트에 해당 값 담기 */
     	for(int j = 0; j < gradeScore.size(); j++){
@@ -204,6 +209,18 @@ public class NaiveBayesianDAO {
     		temp = new Double[]{gradeScore.get(j).getAvg_gr_max(), gradeScore.get(j).getVar_gr_max()};
     		max_gr.add(temp);
     		
+    		temp = new Double[]{gradeScore.get(j).getAvg_num_sen(), gradeScore.get(j).getVar_num_sen()};
+    		num_sen.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_ttr(), gradeScore.get(j).getVar_ttr()};
+    		ttr.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_cli(), gradeScore.get(j).getVar_cli()};
+    		cli.add(temp);
+    		
+    		temp = new Double[]{gradeScore.get(j).getAvg_lix(), gradeScore.get(j).getVar_lix()};
+    		lix.add(temp);
+    		
     	}
     	sentence.setGrade_length(gradeClassification(length, sentence.getLength()));
     	sentence.setGrade_voca_score(gradeClassification(vaca, sentence.getVoca_score()));
@@ -225,7 +242,12 @@ public class NaiveBayesianDAO {
     	sentence.setGrade_cnt_compound(gradeClassification(compound, sentence.getCnt_compound()));
     	sentence.setGrade_cnt_gr(gradeClassification(cnt_gr, sentence.getCnt_gr()));
     	sentence.setGrade_avg_dis_gr(gradeClassification(avg_gr, sentence.getAvg_dis_gr()));
-    	sentence.setGrade_max_dis_gr(gradeClassification(variation_adj, sentence.getMax_dis_gr()));
+    	sentence.setGrade_max_dis_gr(gradeClassification(max_gr, sentence.getMax_dis_gr()));
+
+    	sentence.setGrade_num_sen(gradeClassification(num_sen, sentence.getNum_sen()));
+    	sentence.setGrade_ttr(gradeClassification(ttr, sentence.getTtr()));
+    	sentence.setGrade_cli(gradeClassification(cli, sentence.getCli()));
+    	sentence.setGrade_lix(gradeClassification(lix, sentence.getLix()));
 
     	return sentence;
     }
@@ -247,9 +269,6 @@ public class NaiveBayesianDAO {
     	
     	return grade;
     }
-    
-    
-    
     
     
     /*가우시안 분산 값 grade 별 계산*/
@@ -277,9 +296,15 @@ public class NaiveBayesianDAO {
     	Double cnt_gr = td.calculation(gradeScore.getAvg_gr_cnt(), gradeScore.getVar_gr_cnt(), sentence.getCnt_gr());
     	Double avg_gr = td.calculation(gradeScore.getAvg_gr_avg(), gradeScore.getVar_gr_avg(), sentence.getAvg_dis_gr());
     	Double max_gr = td.calculation(gradeScore.getAvg_gr_max(), gradeScore.getVar_gr_max(), sentence.getMax_dis_gr());
+
+    	Double num_sen = td.calculation(gradeScore.getAvg_num_sen(), gradeScore.getVar_num_sen(), sentence.getNum_sen());
+    	Double ttr = td.calculation(gradeScore.getAvg_ttr(), gradeScore.getVar_ttr(), sentence.getTtr());
+    	Double cli = td.calculation(gradeScore.getAvg_cli(), gradeScore.getVar_cli(), sentence.getCli());
+    	Double lix = td.calculation(gradeScore.getAvg_lix(), gradeScore.getVar_lix(), sentence.getLix());
     	
     	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var;
-    	//avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr;
+    	//avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr
+    	//num_sen * ttr * cli * lix;
     	return result;
     }
     
@@ -308,6 +333,11 @@ public class NaiveBayesianDAO {
     	scoreGrade = sc.getCntGRScore(list_grade, scoreGrade);
     	scoreGrade = sc.getAvgGRScore(list_grade, scoreGrade);
     	scoreGrade = sc.getMaxGRScore(list_grade, scoreGrade);
+
+    	scoreGrade = sc.getNumSenScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getTTRScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getCLIScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getLIXScore(list_grade, scoreGrade);
     	
     	return scoreGrade;
     }
@@ -409,10 +439,10 @@ public class NaiveBayesianDAO {
    		ArrayList<Sentence> list_grade3 = td.selectRandomSentence_essay("2", 6000);*/
    		
    		//String filename = "D:\\Temp\\0529_grade7\\TPEDU_eval_set1.csv";
-   		/*String filename = "D:\\Temp\\TPEDU_train.csv";
+   		String filename = "D:\\Temp\\TPEDU_train_avg.csv";
     	ArrayList<Sentence> list_grade1 = td.readCsv(filename, 0);
     	ArrayList<Sentence> list_grade2 = td.readCsv(filename, 1);
-    	ArrayList<Sentence> list_grade3 = td.readCsv(filename, 2);*/
+    	ArrayList<Sentence> list_grade3 = td.readCsv(filename, 2);
     	/*ArrayList<Sentence> list_grade4 = td.readCsv(filename, 3);
     	ArrayList<Sentence> list_grade5 = td.readCsv(filename, 4);
     	ArrayList<Sentence> list_grade6 = td.readCsv(filename, 5);
@@ -420,8 +450,6 @@ public class NaiveBayesianDAO {
     	ArrayList<Sentence> test_list = td.readCsv("D:\\Temp\\0615_essay_Normalized\\TPEDU_essay5_train.csv", -1);
     	*/
 
-	    
-   		/*
    		Score scoreGrade1 = new Score();
    		Score scoreGrade2 = new Score();
    		Score scoreGrade3 = new Score();
@@ -429,15 +457,15 @@ public class NaiveBayesianDAO {
    		//Grade 별 평균, 분산값 집어넣기 
    		scoreGrade1 = nb.setScore(list_grade1, scoreGrade1);
    		scoreGrade2 = nb.setScore(list_grade2, scoreGrade2);
-   		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);*/
+   		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);
 
    		//등급값들을 하나의 ArrayList 에 집어넣기
-   		ArrayList<Score> scoreGrade = readData("D:/Temp/Naive/conf.bin");
-   		/*if(list_grade1.isEmpty() == false) 	scoreGrade.add(scoreGrade1);
+   		//ArrayList<Score> scoreGrade = readData("D:/Temp/Naive/conf.bin");
+   		ArrayList<Score> scoreGrade = new ArrayList<Score>();
+   		if(list_grade1.isEmpty() == false) 	scoreGrade.add(scoreGrade1);
    		if(list_grade2.isEmpty() == false)	scoreGrade.add(scoreGrade2);
-   		if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);*/
+   		if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);
    		
-	   
    		sentence = gaussianEachFeatureCal(sentence, scoreGrade, 3);
    		
    		sentence.setGrade(nb.gaussianCal(sentence, scoreGrade, 3));
@@ -445,7 +473,7 @@ public class NaiveBayesianDAO {
    	}
    	
 
-    public ArrayList<Score> readData(String filename) {
+    public ArrayList<Score> paragraphReadData(String filename) {
     	ArrayList<Score> scoreGrade = new ArrayList<Score>();
 		try {
 			// CSVReader reader = new CSVReader(new FileReader(filename), '\t');
@@ -456,6 +484,7 @@ public class NaiveBayesianDAO {
 				Score data = new Score();
 				String[] split = s.split("\t");
 				int i = 0;
+				
 				data.setAvg_adjp(Double.parseDouble(split[i]));
 				data.setAvg_advp(Double.parseDouble(split[++i]));
 				data.setAvg_length(Double.parseDouble(split[++i]));
@@ -463,6 +492,25 @@ public class NaiveBayesianDAO {
 				data.setAvg_struct_type(Double.parseDouble(split[++i]));
 				data.setAvg_voca(Double.parseDouble(split[++i]));
 				data.setAvg_word_count(Double.parseDouble(split[++i]));
+				
+				data.setAvg_cnt_char(Double.parseDouble(split[++i]));
+				data.setAvg_cnt_syllable(Double.parseDouble(split[++i]));
+				data.setAvg_cnt_modifier(Double.parseDouble(split[++i]));
+				data.setAvg_awl(Double.parseDouble(split[++i]));
+				data.setAvg_variation_modifier(Double.parseDouble(split[++i]));
+				data.setAvg_variation_adv(Double.parseDouble(split[++i]));
+				data.setAvg_variation_adj(Double.parseDouble(split[++i]));
+				data.setAvg_cnt_cc(Double.parseDouble(split[++i]));
+				data.setAvg_cnt_sbar(Double.parseDouble(split[++i]));
+				data.setAvg_cnt_compound(Double.parseDouble(split[++i]));
+				data.setAvg_gr_cnt(Double.parseDouble(split[++i]));
+				data.setAvg_gr_avg(Double.parseDouble(split[++i]));
+				data.setAvg_gr_max(Double.parseDouble(split[++i]));
+				data.setAvg_num_sen(Double.parseDouble(split[++i]));
+				data.setAvg_ttr(Double.parseDouble(split[++i]));
+				data.setAvg_cli(Double.parseDouble(split[++i]));
+				data.setAvg_lix(Double.parseDouble(split[++i]));
+
 				data.setVar_adjp(Double.parseDouble(split[i]));
 				data.setVar_advp(Double.parseDouble(split[++i]));
 				data.setVar_length(Double.parseDouble(split[++i]));
@@ -470,6 +518,24 @@ public class NaiveBayesianDAO {
 				data.setVar_struct_type(Double.parseDouble(split[++i]));
 				data.setVar_voca(Double.parseDouble(split[++i]));
 				data.setVar_word_count(Double.parseDouble(split[++i]));
+				
+				data.setVar_cnt_char(Double.parseDouble(split[++i]));
+				data.setVar_cnt_syllable(Double.parseDouble(split[++i]));
+				data.setVar_cnt_modifier(Double.parseDouble(split[++i]));
+				data.setVar_awl(Double.parseDouble(split[i]));
+				data.setVar_variation_modifier(Double.parseDouble(split[++i]));
+				data.setVar_variation_adv(Double.parseDouble(split[++i]));
+				data.setVar_variation_adj(Double.parseDouble(split[++i]));
+				data.setVar_cnt_cc(Double.parseDouble(split[++i]));
+				data.setVar_cnt_sbar(Double.parseDouble(split[++i]));
+				data.setVar_cnt_compound(Double.parseDouble(split[++i]));
+				data.setVar_gr_cnt(Double.parseDouble(split[++i]));
+				data.setVar_gr_avg(Double.parseDouble(split[++i]));
+				data.setVar_gr_max(Double.parseDouble(split[++i]));
+				data.setVar_num_sen(Double.parseDouble(split[++i]));
+				data.setVar_ttr(Double.parseDouble(split[++i]));
+				data.setVar_cli(Double.parseDouble(split[++i]));
+				data.setVar_lix(Double.parseDouble(split[++i]));
 				
 				scoreGrade.add(data);
 			}
@@ -480,5 +546,78 @@ public class NaiveBayesianDAO {
 		}
 		return scoreGrade;
 	}
+    public ArrayList<Score> readData(String filename) {
+    	ArrayList<Score> scoreGrade = new ArrayList<Score>();
+    	try {
+    		// CSVReader reader = new CSVReader(new FileReader(filename), '\t');
+    		// UTF-8
+    		BufferedReader in = new BufferedReader(new FileReader(filename));
+    		String s;
+    		while ((s = in.readLine()) != null) {
+    			Score data = new Score();
+    			String[] split = s.split("\t");
+    			int i = 0;
+    			
+    			data.setAvg_adjp(Double.parseDouble(split[i]));
+    			data.setAvg_advp(Double.parseDouble(split[++i]));
+    			data.setAvg_length(Double.parseDouble(split[++i]));
+    			data.setAvg_pattern(Double.parseDouble(split[++i]));
+    			data.setAvg_struct_type(Double.parseDouble(split[++i]));
+    			data.setAvg_voca(Double.parseDouble(split[++i]));
+    			data.setAvg_word_count(Double.parseDouble(split[++i]));
+    			
+    			data.setAvg_cnt_char(Double.parseDouble(split[++i]));
+    			data.setAvg_cnt_syllable(Double.parseDouble(split[++i]));
+    			data.setAvg_cnt_modifier(Double.parseDouble(split[++i]));
+    			data.setAvg_awl(Double.parseDouble(split[++i]));
+    			data.setAvg_variation_modifier(Double.parseDouble(split[++i]));
+    			data.setAvg_variation_adv(Double.parseDouble(split[++i]));
+    			data.setAvg_variation_adj(Double.parseDouble(split[++i]));
+    			data.setAvg_cnt_cc(Double.parseDouble(split[++i]));
+    			data.setAvg_cnt_sbar(Double.parseDouble(split[++i]));
+    			data.setAvg_cnt_compound(Double.parseDouble(split[++i]));
+    			data.setAvg_gr_cnt(Double.parseDouble(split[++i]));
+    			data.setAvg_gr_avg(Double.parseDouble(split[++i]));
+    			data.setAvg_gr_max(Double.parseDouble(split[++i]));
+    			data.setAvg_num_sen(Double.parseDouble(split[++i]));
+    			data.setAvg_ttr(Double.parseDouble(split[++i]));
+    			data.setAvg_cli(Double.parseDouble(split[++i]));
+    			data.setAvg_lix(Double.parseDouble(split[++i]));
+    			
+    			data.setVar_adjp(Double.parseDouble(split[i]));
+    			data.setVar_advp(Double.parseDouble(split[++i]));
+    			data.setVar_length(Double.parseDouble(split[++i]));
+    			data.setVar_pattern(Double.parseDouble(split[++i]));
+    			data.setVar_struct_type(Double.parseDouble(split[++i]));
+    			data.setVar_voca(Double.parseDouble(split[++i]));
+    			data.setVar_word_count(Double.parseDouble(split[++i]));
+    			
+    			data.setVar_cnt_char(Double.parseDouble(split[++i]));
+    			data.setVar_cnt_syllable(Double.parseDouble(split[++i]));
+    			data.setVar_cnt_modifier(Double.parseDouble(split[++i]));
+    			data.setVar_awl(Double.parseDouble(split[i]));
+    			data.setVar_variation_modifier(Double.parseDouble(split[++i]));
+    			data.setVar_variation_adv(Double.parseDouble(split[++i]));
+    			data.setVar_variation_adj(Double.parseDouble(split[++i]));
+    			data.setVar_cnt_cc(Double.parseDouble(split[++i]));
+    			data.setVar_cnt_sbar(Double.parseDouble(split[++i]));
+    			data.setVar_cnt_compound(Double.parseDouble(split[++i]));
+    			data.setVar_gr_cnt(Double.parseDouble(split[++i]));
+    			data.setVar_gr_avg(Double.parseDouble(split[++i]));
+    			data.setVar_gr_max(Double.parseDouble(split[++i]));
+    			data.setVar_num_sen(Double.parseDouble(split[++i]));
+    			data.setVar_ttr(Double.parseDouble(split[++i]));
+    			data.setVar_cli(Double.parseDouble(split[++i]));
+    			data.setVar_lix(Double.parseDouble(split[++i]));
+    			
+    			scoreGrade.add(data);
+    		}
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	return scoreGrade;
+    }
 
 }

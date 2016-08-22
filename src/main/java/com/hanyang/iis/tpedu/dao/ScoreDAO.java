@@ -386,4 +386,73 @@ public class ScoreDAO {
     	  
     	  return scoreGrade;
       }
+      
+      
+      /*문장 개수 점수 */
+      public Score getNumSenScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getNum_sen());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_num_sen(avgData);
+    	  scoreGrade.setVar_num_sen(varData); 
+    	  
+    	  return scoreGrade;
+      }
+
+      /*문단 단위 TTR 구사한 어휘의 다양성 점수 */
+      public Score getTTRScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getTtr());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_ttr(avgData);    	
+    	  scoreGrade.setVar_ttr(varData); 
+    	  
+    	  return scoreGrade;
+      }
+      
+      /*문단 수준에서 얼마나 잘 이해할 수 있는지 측정 점수 */
+      public Score getCLIScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getCli());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_cli(avgData);    	
+    	  scoreGrade.setVar_cli(varData); 
+    	  
+    	  return scoreGrade;
+      }
+      
+      /*문단 수준에서 얼마나 이해하기 어려운지 측정 점수 */
+      public Score getLIXScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getLix());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_lix(avgData);    	
+    	  scoreGrade.setVar_lix(varData); 
+    	  
+    	  return scoreGrade;
+      }
 }
