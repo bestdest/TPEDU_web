@@ -7,16 +7,21 @@ public class TargetDTO {
 	private String Pattern;
 	private int grage;
 	private int lang;
+	public float pattern_score;
 	
-	
-	public TargetDTO(int id, String sentence, String pattern, int grage,
-			int lang) {
+	public float getPattern_score() {
+		return pattern_score;
+	}
+	public void setPattern_score(float pattern_score) {
+		this.pattern_score = pattern_score;
+	}
+	public TargetDTO(int id, String sentence, String pattern, int grage, float pattern_score) {
 		super();
 		Id = id;
 		Sentence = sentence;
 		Pattern = pattern;
 		this.grage = grage;
-		this.lang = lang;
+		this.pattern_score = pattern_score;
 	}
 	public int getId() {
 		return Id;
@@ -42,12 +47,6 @@ public class TargetDTO {
 	}
 	public void setGrage(int grage) {
 		this.grage = grage;
-	}
-	public int getLang() {
-		return lang;
-	}
-	public void setLang(int lang) {
-		this.lang = lang;
 	}
 	
 }

@@ -27,7 +27,7 @@ public class NaiveBayesianDAO {
    
 
     /*가우시안 등급 계산*/
-    public void gaussianCal(ArrayList<Sentence> testList, ArrayList<Score> gradeScore, int grade_count){
+    public void gaussianCal(ArrayList<Sentence> testList, ArrayList<Score> gradeScore, int grade_count, int is_para){
 		int isFail = 0;
 		int isSuccess = 0;
 		int isTotalGrade[] = new int[grade_count];
@@ -40,7 +40,7 @@ public class NaiveBayesianDAO {
     		/* Grade 값 계산 */
     		Double[] grade = new Double[grade_count];
     		for(int j = 0; j < gradeScore.size(); j++){
-    			grade[j] = getCal(gradeScore.get(j), testList.get(i));
+    			grade[j] = getCal(gradeScore.get(j), testList.get(i), is_para);
     		}
     		int orgin_grade = testList.get(i).getGrade();
     		int classification = 0;
@@ -91,12 +91,12 @@ public class NaiveBayesianDAO {
     }
     
     /*가우시안 문장 별 등급 분류 (가장 큰 값 구하기)*/
-    public int gaussianCal(Sentence sentence, ArrayList<Score> gradeScore, int grade_count){
+    public int gaussianCal(Sentence sentence, ArrayList<Score> gradeScore, int grade_count, int is_para){
     	
     	/* Grade 값 계산 */
 		Double[] grade = new Double[grade_count];
 		for(int j = 0; j < gradeScore.size(); j++){
-			grade[j] = getCal(gradeScore.get(j), sentence);
+			grade[j] = getCal(gradeScore.get(j), sentence, is_para);
 		}
 		int classification = 0;
 		
@@ -272,7 +272,7 @@ public class NaiveBayesianDAO {
     
     
     /*가우시안 분산 값 grade 별 계산*/
-    public Double getCal(Score gradeScore, Sentence sentence){
+    public Double getCal(Score gradeScore, Sentence sentence, int is_paragraph){
     	TrainingDataSelect td = new TrainingDataSelect();
     	
     	Double length_var = td.calculation(gradeScore.getAvg_length(), gradeScore.getVar_length(), sentence.getLength());
@@ -302,9 +302,14 @@ public class NaiveBayesianDAO {
     	Double cli = td.calculation(gradeScore.getAvg_cli(), gradeScore.getVar_cli(), sentence.getCli());
     	Double lix = td.calculation(gradeScore.getAvg_lix(), gradeScore.getVar_lix(), sentence.getLix());
     	
-    	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var;
-    	//avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr
-    	//num_sen * ttr * cli * lix;
+    	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var *
+    	avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr;
+    	
+    	if(is_paragraph == 1){
+    		result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var *
+    				avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr * num_sen * ttr * cli * lix;
+    		
+    	}
     	return result;
     }
     
@@ -345,16 +350,16 @@ public class NaiveBayesianDAO {
     
     public static void main(String[] args) throws Exception {
         //-- 학습 데이터
-    	TrainingDataSelect td = new TrainingDataSelect();
+    	/*TrainingDataSelect td = new TrainingDataSelect();
 
-    	/* DB 에서 데이터 가져오기 */
+    	 DB 에서 데이터 가져오기 
     	//HashMap<Integer, Score> map = td.selectSentenceScore();
     	ArrayList<Sentence> list_grade1 = td.selectRandomSentence("0", 6000);
     	ArrayList<Sentence> list_grade2 = td.selectRandomSentence("1", 6000);
     	ArrayList<Sentence> list_grade3 = td.selectRandomSentence("2", 6000);
     	ArrayList<Sentence> test_list = td.selectRandomSentence("0,1,2", 2000);
     	
-    	/*String filename = "D:\\Temp\\0615_essay_Normalized\\TPEDU_essay3_train.csv";
+    	String filename = "D:\\Temp\\0615_essay_Normalized\\TPEDU_essay3_train.csv";
     	//String filename = "D:\\Temp\\0529_grade7\\TPEDU_eval_set1.csv";
     	ArrayList<Sentence> list_grade1 = td.readCsv(filename, 0);
     	ArrayList<Sentence> list_grade2 = td.readCsv(filename, 1);
@@ -363,16 +368,16 @@ public class NaiveBayesianDAO {
     	ArrayList<Sentence> list_grade5 = td.readCsv(filename, 4);
     	ArrayList<Sentence> list_grade6 = td.readCsv(filename, 5);
     	ArrayList<Sentence> list_grade7 = td.readCsv(filename, 6);
-    	ArrayList<Sentence> test_list = td.readCsv("D:\\Temp\\0615_essay_Normalized\\TPEDU_essay3_train.csv", -1);*/
+    	ArrayList<Sentence> test_list = td.readCsv("D:\\Temp\\0615_essay_Normalized\\TPEDU_essay3_train.csv", -1);
 
-    	/* 가져온 데이터 보기 */
-    	/*Set<Integer> keySet = map.keySet();
+    	 가져온 데이터 보기 
+    	Set<Integer> keySet = map.keySet();
     	Iterator<Integer> iterator = keySet.iterator();
     	while (iterator.hasNext()) {
     		Integer key = iterator.next();
     		Sentence sentence = map.get(key);
     		System.out.printf("key : %s , leng_avg : %s , leng_var : %s %n", key, score.getAvg_length(), score.getVar_length());
-    	}*/
+    	}
     	
     	NaiveBayesianDAO nb = new NaiveBayesianDAO();
     	
@@ -388,21 +393,21 @@ public class NaiveBayesianDAO {
     	scoreGrade1 = nb.setScore(list_grade1, scoreGrade1);
     	scoreGrade2 = nb.setScore(list_grade2, scoreGrade2);
     	scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);
-    	/*scoreGrade4 = nb.setScore(list_grade4, scoreGrade4);
+    	scoreGrade4 = nb.setScore(list_grade4, scoreGrade4);
     	scoreGrade5 = nb.setScore(list_grade5, scoreGrade5);
     	scoreGrade6 = nb.setScore(list_grade6, scoreGrade6);
-    	scoreGrade7 = nb.setScore(list_grade7, scoreGrade7);*/
+    	scoreGrade7 = nb.setScore(list_grade7, scoreGrade7);
 
     	ArrayList<Score> scoreGrade = new ArrayList<Score>();
     	if(list_grade1.isEmpty() == false) 	scoreGrade.add(scoreGrade1);
     	if(list_grade2.isEmpty() == false)	scoreGrade.add(scoreGrade2);
     	if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);
-    	/*if(list_grade4.isEmpty() == false)	scoreGrade.add(scoreGrade4);
+    	if(list_grade4.isEmpty() == false)	scoreGrade.add(scoreGrade4);
     	if(list_grade5.isEmpty() == false)	scoreGrade.add(scoreGrade5);
     	if(list_grade6.isEmpty() == false)	scoreGrade.add(scoreGrade6);
-    	if(list_grade7.isEmpty() == false)	scoreGrade.add(scoreGrade7);*/
-    	
-    	nb.gaussianCal(test_list, scoreGrade, 3);
+    	if(list_grade7.isEmpty() == false)	scoreGrade.add(scoreGrade7);
+    	int is_para = 0;
+    	nb.gaussianCal(test_list, scoreGrade, 3, is_para);*/
     	
     }
 
@@ -425,7 +430,7 @@ public class NaiveBayesianDAO {
    	/* input : Sentence
    	 * output : grade 
    	 * */ 
-   	public Sentence getResult(String search_txt, Sentence sentence){
+   	public Sentence getResult(String search_txt, Sentence sentence, int is_para){
    		//-- 학습 데이터
    		TrainingDataSelect td = new TrainingDataSelect();
    		NaiveBayesianDAO nb = new NaiveBayesianDAO();
@@ -439,13 +444,29 @@ public class NaiveBayesianDAO {
    		ArrayList<Sentence> list_grade3 = td.selectRandomSentence_essay("2", 6000);*/
    		
    		//String filename = "D:\\Temp\\0529_grade7\\TPEDU_eval_set1.csv";
-   		String filename = "D:\\Temp\\TPEDU_train_avg.csv";
-    	ArrayList<Sentence> list_grade1 = td.readCsv(filename, 0);
-    	ArrayList<Sentence> list_grade2 = td.readCsv(filename, 1);
-    	ArrayList<Sentence> list_grade3 = td.readCsv(filename, 2);
-    	/*ArrayList<Sentence> list_grade4 = td.readCsv(filename, 3);
-    	ArrayList<Sentence> list_grade5 = td.readCsv(filename, 4);
-    	ArrayList<Sentence> list_grade6 = td.readCsv(filename, 5);
+   		String filename = "";
+   		ArrayList<Sentence> list_grade1 = new ArrayList<Sentence>();
+   		ArrayList<Sentence> list_grade2 = new ArrayList<Sentence>();
+   		ArrayList<Sentence> list_grade3 = new ArrayList<Sentence>();
+   		ArrayList<Sentence> list_grade4 = new ArrayList<Sentence>();
+   		ArrayList<Sentence> list_grade5 = new ArrayList<Sentence>();
+   		
+   		if(is_para == 0){		//문장
+   			filename = "D:\\Temp\\TPEDU_train_sen.csv";
+   			list_grade1 = td.readCsvSentence(filename, 0);
+   			list_grade2 = td.readCsvSentence(filename, 1);
+   			list_grade3 = td.readCsvSentence(filename, 2);
+   			list_grade4 = td.readCsvSentence(filename, 3);
+   			list_grade5 = td.readCsvSentence(filename, 4);
+   		}else{					//문단
+   			filename = "D:\\Temp\\TPEDU_train_para3.csv";
+   			list_grade1 = td.readCsv(filename, 0);
+   			list_grade2 = td.readCsv(filename, 1);
+   			list_grade3 = td.readCsv(filename, 2);
+   			list_grade4 = td.readCsv(filename, 3);
+   			list_grade5 = td.readCsv(filename, 4);
+   		}
+    	/*ArrayList<Sentence> list_grade6 = td.readCsv(filename, 5);
     	ArrayList<Sentence> list_grade7 = td.readCsv(filename, 6);
     	ArrayList<Sentence> test_list = td.readCsv("D:\\Temp\\0615_essay_Normalized\\TPEDU_essay5_train.csv", -1);
     	*/
@@ -453,11 +474,15 @@ public class NaiveBayesianDAO {
    		Score scoreGrade1 = new Score();
    		Score scoreGrade2 = new Score();
    		Score scoreGrade3 = new Score();
+   		Score scoreGrade4 = new Score();
+   		Score scoreGrade5 = new Score();
 	   
    		//Grade 별 평균, 분산값 집어넣기 
    		scoreGrade1 = nb.setScore(list_grade1, scoreGrade1);
    		scoreGrade2 = nb.setScore(list_grade2, scoreGrade2);
    		scoreGrade3 = nb.setScore(list_grade3, scoreGrade3);
+   		scoreGrade4 = nb.setScore(list_grade4, scoreGrade4);
+   		scoreGrade5 = nb.setScore(list_grade5, scoreGrade5);
 
    		//등급값들을 하나의 ArrayList 에 집어넣기
    		//ArrayList<Score> scoreGrade = readData("D:/Temp/Naive/conf.bin");
@@ -465,10 +490,12 @@ public class NaiveBayesianDAO {
    		if(list_grade1.isEmpty() == false) 	scoreGrade.add(scoreGrade1);
    		if(list_grade2.isEmpty() == false)	scoreGrade.add(scoreGrade2);
    		if(list_grade3.isEmpty() == false)	scoreGrade.add(scoreGrade3);
+   		if(list_grade4.isEmpty() == false)	scoreGrade.add(scoreGrade4);
+   		if(list_grade5.isEmpty() == false)	scoreGrade.add(scoreGrade5);
    		
-   		sentence = gaussianEachFeatureCal(sentence, scoreGrade, 3);
+   		sentence = gaussianEachFeatureCal(sentence, scoreGrade, 5);
    		
-   		sentence.setGrade(nb.gaussianCal(sentence, scoreGrade, 3));
+   		sentence.setGrade(nb.gaussianCal(sentence, scoreGrade, 5, is_para));
    		return sentence;				    /*가우시안 문장 별 등급 분류 (가장 큰 값 구하기)*/
    	}
    	

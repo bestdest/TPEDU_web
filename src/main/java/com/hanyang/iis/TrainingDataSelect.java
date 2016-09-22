@@ -262,5 +262,52 @@ public class TrainingDataSelect {
 		}
 		return data;
 	}
+    
+    public ArrayList<Sentence> readCsvSentence(String filename, int grade) {
+    	
+    	ArrayList<Sentence> data = new ArrayList<Sentence>();
+    	try {
+    		// CSVReader reader = new CSVReader(new FileReader(filename), '\t');
+    		// UTF-8
+    		CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+    		String[] s;
+    		
+    		while ((s = reader.readNext()) != null) {
+    			int i = 0;
+    			if(grade == -1 || s[0].equals(grade+"")){
+    				Sentence sentence = new Sentence();
+    				sentence.setGrade(Integer.parseInt(s[i]));
+    				sentence.setStruct_type(Double.parseDouble(s[++i]));
+    				sentence.setCnt_advp(Double.parseDouble(s[++i]));
+    				sentence.setCnt_adjp(Double.parseDouble(s[++i]));
+    				sentence.setCnt_modifier(Double.parseDouble(s[++i]));
+    				sentence.setLength(Double.parseDouble(s[++i]));
+    				sentence.setWord(Double.parseDouble(s[++i]));
+    				sentence.setAvg_char(Double.parseDouble(s[++i]));
+    				sentence.setAvg_syllables(Double.parseDouble(s[++i]));
+    				sentence.setVoca_score(Double.parseDouble(s[++i]));
+    				sentence.setPattern_score(Double.parseDouble(s[++i]));
+    				
+    				sentence.setRatio_awl(Double.parseDouble(s[++i]));
+    				sentence.setVar_modifier(Double.parseDouble(s[++i]));
+    				sentence.setVar_adv(Double.parseDouble(s[++i]));
+    				sentence.setVar_adj(Double.parseDouble(s[++i]));
+    				sentence.setCnt_cc(Double.parseDouble(s[++i]));
+    				sentence.setCnt_sbar(Double.parseDouble(s[++i]));
+    				sentence.setCnt_compound(Double.parseDouble(s[++i]));
+    				sentence.setCnt_gr(Double.parseDouble(s[++i]));
+    				sentence.setAvg_dis_gr(Double.parseDouble(s[++i]));
+    				sentence.setMax_dis_gr(Double.parseDouble(s[++i]));
+    				
+    				data.add(sentence);
+    			}
+    		}
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	return data;
+    }
 
 }

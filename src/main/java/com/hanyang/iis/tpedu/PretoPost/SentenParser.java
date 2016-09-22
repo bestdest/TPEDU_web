@@ -18,9 +18,11 @@ import edu.stanford.nlp.trees.TreebankLanguagePack;
 import edu.stanford.nlp.trees.TypedDependency;
 
 public class SentenParser {
-
-	public String GetParseTree(String Sentence) {
-		Sentence = Sentence.replace(".", "");
+	private List<TypedDependency> tdl;
+	private String ParseTree;
+	
+	public String GetParseTree(String sentence) {
+		sentence = sentence.replace(".", "");
 
 		LexicalizedParser lp = LexicalizedParser.loadModel(
 				"edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz",
@@ -29,9 +31,29 @@ public class SentenParser {
 		// Uncomment the following line to obtain original Stanford Dependencies
 		// tlp.setGenerateOriginalDependencies(true);
 		GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
+		
+		String str = sentence;
+		
+		StringTokenizer stken = new StringTokenizer(str);
+		
 		Parser parser = new Parser();
-
-		Tree tree = parser.parse(Sentence);
+		List<String> SList = new ArrayList<String>();
+		
+		while(stken.hasMoreTokens()){
+			SList.add(stken.nextToken());
+		}
+		String[] sent = (String[]) SList.toArray(new String[SList.size()]);
+		Tree parse = lp.apply(Sentence.toWordList(sent));
+		GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
+		List<TypedDependency> tdl = gs.typedDependenciesCCprocessed();
+		
+		TypedDependency tmp = tdl.get(0);
+		
+		this.tdl = tdl;
+		this.ParseTree = parser.parse(str).toString();
+		
+		
+		Tree tree = parser.parse(sentence);
 
 		String Query = "" + tree;
 
@@ -152,5 +174,27 @@ public class SentenParser {
 
 		return post_tree;
 
+	}
+	
+	public List<TypedDependency> getTdl() {
+		return tdl;
+	}
+
+
+
+	public void setTdl(List<TypedDependency> tdl) {
+		this.tdl = tdl;
+	}
+
+
+
+	public String getParseTree() {
+		return ParseTree;
+	}
+
+
+
+	public void setParseTree(String parseTree) {
+		ParseTree = parseTree;
 	}
 }

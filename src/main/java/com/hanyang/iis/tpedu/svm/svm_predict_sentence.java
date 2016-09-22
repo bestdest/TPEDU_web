@@ -39,7 +39,7 @@ public class svm_predict_sentence {
 		return Integer.parseInt(s);
 	}
 
-	private static int predict(svm_model model, int predict_probability, Sentence sentence) throws IOException
+	private static int predict(svm_model model, int predict_probability, Sentence sentence, int is_paragraph) throws IOException
 	{
 		int svm_type=svm.svm_get_svm_type(model);
 		int nr_class=svm.svm_get_nr_class(model);
@@ -62,14 +62,15 @@ public class svm_predict_sentence {
 		
 		int num_param = 24;
 		
+		if(is_paragraph == 0){		//문장
+			num_param = 20;
+		}
 			/*
 			 * here here here here here here here here here here here here here here 
 			 * here here here here here here here here here here here here here here 
 			 * here here here here here here here here here here here here here here 
 			 * here here here here here here here here here here here here here here		
 			 * */
-	
-
 		
 		svm_node[] x = new svm_node[num_param];
 		
@@ -92,11 +93,7 @@ public class svm_predict_sentence {
 		//x[].value -> feature value
 		int idx = 0;
 		
-
-		x[idx] = new svm_node();
-		x[idx].value = sentence.getNum_sen();
-		x[idx].index = ++idx;
-
+		
 		x[idx] = new svm_node();
 		x[idx].value = sentence.getStruct_type();
 		x[idx].index = ++idx;
@@ -177,18 +174,25 @@ public class svm_predict_sentence {
 		x[idx].value = sentence.getMax_dis_gr();
 		x[idx].index = ++idx;
 		
-		x[idx] = new svm_node();
-		x[idx].value = sentence.getTtr();
-		x[idx].index = ++idx;
 		
-		x[idx] = new svm_node();
-		x[idx].value = sentence.getCli();
-		x[idx].index = ++idx;
-		
-		x[idx] = new svm_node();
-		x[idx].value = sentence.getLix();
-		x[idx].index = ++idx;
-		
+		if(is_paragraph == 1){
+			x[idx] = new svm_node();
+			x[idx].value = sentence.getNum_sen();
+			x[idx].index = ++idx;
+
+			x[idx] = new svm_node();
+			x[idx].value = sentence.getTtr();
+			x[idx].index = ++idx;
+			
+			x[idx] = new svm_node();
+			x[idx].value = sentence.getCli();
+			x[idx].index = ++idx;
+			
+			x[idx] = new svm_node();
+			x[idx].value = sentence.getLix();
+			x[idx].index = ++idx;
+			
+		}
 		
 		
 		double v;
@@ -216,14 +220,20 @@ public class svm_predict_sentence {
 		System.exit(1);
 	}
 
-	public int getSVMResult(Sentence sentence) throws IOException 
+	public int getSVMResult(Sentence sentence, int is_paragraph) throws IOException 
 	{
 		int i, predict_probability=0;
         	svm_print_string = svm_print_stdout;
         int result = 0;
         String Option = "";
         
-        String modelfile = "D:\\Temp\\SVM\\weebit_para_all_avg_norm_train.model";
+        String modelfile = "";
+        if(is_paragraph == 0){	//문장
+        	modelfile = "D:\\Temp\\SVM\\weebit_sent_train.model"; 
+        }else{					//문단
+        	modelfile = "D:\\Temp\\SVM\\TPEDU_train_para3.model"; 
+        }
+        		
         
         StringTokenizer stkn = new StringTokenizer(Option);
         String model_arr[];
@@ -298,7 +308,7 @@ public class svm_predict_sentence {
 			 * hereherehereherehereherehereherehereherehere
 			 * hereherehereherehereherehereherehereherehere
 			 * */
-			result = predict(model,predict_probability, sentence);
+			result = predict(model,predict_probability, sentence, is_paragraph);
 		} 
 		catch(FileNotFoundException e) 
 		{

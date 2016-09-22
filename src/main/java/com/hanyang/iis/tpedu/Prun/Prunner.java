@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 
 import com.hanyang.iis.tpedu.PretoPost.TargetNode;
 
+
 public class Prunner {
 
 	public String Prunning(String ParseTree) {

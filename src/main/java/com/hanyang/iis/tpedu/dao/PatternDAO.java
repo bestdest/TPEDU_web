@@ -11,17 +11,18 @@ import java.util.List;
 import com.hanyang.iis.tpedu.dto.PatternDTO;
 
 public class PatternDAO {
-
-	public List<PatternDTO> GetPatternList() {
+	
+	
+	public List<PatternDTO> GetPatternList(){
 		List<PatternDTO> PatternList = new ArrayList<PatternDTO>();
-
+		
 		String jdbcUrl = "jdbc:mysql://166.104.140.75:60000";
 		String userID = "root";
 		String userPass = "iislabkey";
 		String tblName = "tbl_pattern_count_depth_prun";
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(jdbcUrl, userID, userPass);
+			 conn = DriverManager.getConnection(jdbcUrl, userID, userPass);
 
 		} catch (SQLException e) {
 			System.out.println("Connection fail!");
@@ -36,18 +37,18 @@ public class PatternDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		ResultSet rs = null;
-
+		
 		Statement stmt;
 		try {
 			stmt = conn.createStatement();
-
-			String SQLQuery = "select id,sentence,pattern,grade,lang,count,type,cnt_advp,cnt_adjp from " + tblName;
+			
+			String SQLQuery = "select id,sentence,pattern,grade,lang,count,type,cnt_advp,cnt_adjp from "+tblName;
 
 			rs = stmt.executeQuery(SQLQuery);
-
-			while (rs.next()) {
+			
+			while(rs.next()){
 				int id = rs.getInt("id");
 				String Sentence = rs.getString("sentence");
 				String Pattern = rs.getString("pattern");
@@ -57,22 +58,26 @@ public class PatternDAO {
 				int type = rs.getInt("type");
 				int cnt_advp = rs.getInt("cnt_advp");
 				int cnt_adjp = rs.getInt("cnt_adjp");
-
-				PatternDTO tmp = new PatternDTO(id, Sentence, Pattern, grade, lang, count, type, cnt_advp, cnt_adjp);
-
+				
+				
+				PatternDTO tmp = new PatternDTO(id,Sentence, Pattern, grade, lang, count, type, cnt_advp, cnt_adjp);
+				
 				PatternList.add(tmp);
 			}
-
+			
 			rs.close();
 			stmt.close();
 			conn.close();
-
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		
 		return PatternList;
 	}
+	
+	
 
 }

@@ -1,4 +1,5 @@
 package com.hanyang.iis.tpedu.Prun;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class LeafChanger {
@@ -128,4 +129,50 @@ public class LeafChanger {
 		
 		return num_ADJP;
 	}
+	
+	public int Count_Modifier(String ParseTree){
+		int num_Modifier = 0;
+		
+		StringTokenizer stkn = new StringTokenizer(ParseTree);
+		
+		while(stkn.hasMoreTokens()){
+			String curtkn = stkn.nextToken();
+			
+			if(curtkn.contains("RBS") || curtkn.contains("RBR")|| curtkn.contains("RB")|| curtkn.contains("JJS")|| curtkn.contains("JJR")|| curtkn.contains("JJ")|| curtkn.contains("WP")|| curtkn.contains("WP$")|| curtkn.contains("PRP$")|| curtkn.contains("VBN")|| curtkn.contains("VBG")|| curtkn.contains("TO")|| curtkn.contains("IN")|| curtkn.contains("DT")|| curtkn.contains("CD")){
+				num_Modifier++;
+			}
+		}
+		
+		return num_Modifier;
+	}
+	
+	public int Count_SBAR(String ParseTree){
+		int num_SBAR=0;
+		StringTokenizer stkn = new StringTokenizer(ParseTree);
+		
+		while(stkn.hasMoreTokens()){
+			String curtkn = stkn.nextToken();
+			
+			if(curtkn.contains("SBAR")){
+				num_SBAR++;
+			}
+		}
+		return num_SBAR;
+	}
+	
+	public int Count_CC(String ParseTree){
+		int num_CC=0;
+		StringTokenizer stkn = new StringTokenizer(ParseTree);
+		
+		while(stkn.hasMoreTokens()){
+			String curtkn = stkn.nextToken();
+			
+			if(curtkn.contains("CC")){
+				num_CC++;
+			}
+		}
+		return num_CC;
+	}
+	
+	
 }

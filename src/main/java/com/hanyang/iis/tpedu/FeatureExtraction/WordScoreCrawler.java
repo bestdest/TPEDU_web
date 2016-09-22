@@ -27,7 +27,7 @@ import com.org.watsonwrite.lawrence.Lawrence;
 public class WordScoreCrawler {
 	public static double MAX = 50;
 	
-	public static HashMap<String,Double> vocaScore(String sentence) throws IOException{
+	public HashMap<String,String> vocaScore(String sentence) throws IOException{
 		StringTokenizer st = new StringTokenizer(sentence," ,.?!-()/;:~\"");
 		String[] words = new String[st.countTokens()];
 		Double score = 0.0;
@@ -38,7 +38,7 @@ public class WordScoreCrawler {
 		}
 		double sentence_Score = 0.0;
 		double AWL_score = 0.0;
-		HashMap<String,Double> lexical = new HashMap<String,Double>();
+		HashMap<String,String> lexical = new HashMap<String,String>();
 		
 		int words_count=0;
 		int sum_of_wordlen=0;
@@ -51,7 +51,7 @@ public class WordScoreCrawler {
 			 * AWL score Adding
 			 */
 			for(int j=1; j<11;j++){
-				String file = "src/main/resources/AWL/AWL"+j+".txt";
+				String file = "D:\\Temp\\Common\\AWL\\AWL"+j+".txt";
 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
 				String awl_word = null;
 				while((awl_word = reader.readLine())!=null){
@@ -68,7 +68,7 @@ public class WordScoreCrawler {
 			words[i].replace("\"", "");
 			if(words[i].length()==1)
 				continue;
-			if(words[i].contains("hansel") ||words[i].contains("mongolians") ||words[i].contains("spiderman") ||words[i].contains("pipi") ||words[i].contains("mattie") ||words[i].contains("bella") || words[i].contains("mira") || words[i].contains("dancers") || words[i].contains("?rst"))
+			if(words[i].contains("hansel") ||words[i].contains("mongolians") ||words[i].contains("spiderman") ||words[i].contains("pipi") ||words[i].contains("mattie") ||words[i].contains("bella") || words[i].contains("mira") || words[i].contains("dancers") || words[i].contains("ﬁrst"))
 				continue;
 			if(words[i].contains("'") || words[i].contains("$") || words[i].contains("&")|| words[i].contains("%"))
 				continue;
@@ -79,7 +79,7 @@ public class WordScoreCrawler {
 				continue;
 			}else{
 				score = GetWordScore_Crawler(words[i]);
-				System.out.println(words[i] + " :  "+ score);
+//				System.out.println(words[i] + " :  "+ score);
 				if(score != 0.0){
 					InsertWordScore_DB(words[i], score);
 				}
@@ -96,10 +96,10 @@ public class WordScoreCrawler {
 		double avg_of_wordsyl = (double)sum_of_wordsyl/(double)words.length;
 //		System.out.println("NumChar : " + avg_of_wordlen);
 //		System.out.println("NumSyll : " + avg_of_wordsyl);
-		lexical.put("voca_score", sentence_Score);
-		lexical.put("NumChar", avg_of_wordlen);
-		lexical.put("NumSyll", avg_of_wordsyl);
-		lexical.put("AWL_score", AWL_score);
+		lexical.put("voca_score", String.valueOf(sentence_Score));
+		lexical.put("numChar", String.valueOf(avg_of_wordlen));
+		lexical.put("numSyll", String.valueOf(avg_of_wordsyl));
+		lexical.put("AWL_score", String.valueOf(AWL_score));
 		
 		return lexical; // Sum
 		

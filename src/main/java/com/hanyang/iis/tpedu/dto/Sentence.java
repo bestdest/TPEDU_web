@@ -57,6 +57,9 @@ public class Sentence {
 	private byte grade_ttr;				//구성 성분간의 문법적 관계
 	private byte grade_cli;			//GR 간의 평균 거리
 	private byte grade_lix;			//GR 간의 최대 거리
+	
+	private SenFeatureDTO originScore;
+	private ParaFeatureDTO originScorePara;
 
 	public byte getGrade_length() {
 		return grade_length;
@@ -359,6 +362,18 @@ public class Sentence {
 	}
 	public void setGrade_lix(byte grade_lix) {
 		this.grade_lix = grade_lix;
+	}
+	public SenFeatureDTO getOriginScore() {
+		return originScore;
+	}
+	public void setOriginScore(SenFeatureDTO originScore) {
+		this.originScore = originScore;
+	}
+	public ParaFeatureDTO getOriginScorePara() {
+		return originScorePara;
+	}
+	public void setOriginScorePara(ParaFeatureDTO originScorePara) {
+		this.originScorePara = originScorePara;
 	}
 	
 	

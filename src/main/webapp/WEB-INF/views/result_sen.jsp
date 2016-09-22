@@ -175,11 +175,10 @@ div.feature span{
 			</div>   
 			 <!-- 설명영역 -->
 			<div style=" width: 590px;; min-width: 400px; max-width: 600px; height: auto; border: 2px solid gray; border-radius: 10px;  float:right; padding:20px;">
-				<div class="feature"> * 문장 개수: ${sentence_origin.numSen }개 <br></div>
-				<div class="feature"> * 전체 문장 길이 : ${sentence_origin.length } 	<br></div> 
-				<div class="feature"> * 전체 단어 개수 : ${sentence_origin.word }개 	<br></div>
+				<div class="feature"> * 패턴 점수 : ${sentence_origin.pattern_score }점 	<br></div> 
+				<div class="feature"> * 단어 개수 : ${sentence_origin.word }개 	<br></div>
 				<div class="feature"> 
-					* 수식어 전체 개수 (전체 : ${sentence_origin.cnt_modifier }개)<br> 
+					* 수식어 개수 (전체 : ${sentence_origin.cnt_modifier })<br> 
 					<span> - 수식어1 : 10 개<br>	</span> 
 					<span> - 수식어2 : 10 개<br>	</span> 
 					<span> - 수식어3 : 10 개<br>	</span> 
@@ -198,12 +197,9 @@ div.feature span{
 					<span>- Collins Dictionary 에 나온 단어 기준 <br></span>
 					<span> (http://collinsdictionary.com/dictionary)<br></span>
 				</div>
-				<div class="feature"> * 문단 유사 단어 사용비율 : ${sentence_origin.TTR } <br>(동일하지않은 단어수 / 전체 단어 수)<br></div>
+				<div class="feature"> * 평균 단어의 음절수 : ${sentence_origin.numSyll }개 <br></div>
 				<div class="feature"> 
-					* 문단 가독성 점수(Coleman-Liau Index) : ${sentence_origin.CLI }    <br>
-					<span>	- CLI = 0.0588L - 0.296S - 15.8	<br></span>
-					<span>	- L : 글자수 / 단어수 * 100 (100개 단어당 평균 글자 수)	<br></span>
-					<span>	- S : 문장수 / 단어수 * 100 (100개 단어당 문장 개수)	</span>	
+					* 단어당 평균 글자개수 : ${sentence_origin.numChar }개    <br>
 				</div>
 				<div>  </div>
 				

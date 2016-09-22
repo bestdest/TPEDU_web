@@ -327,7 +327,7 @@ public class Evaluation<T extends Comparable<? super T>> implements Serializable
                 if (count != 0) {
                     expected = resolveLabelForClass(clazz2);
                     grade[Integer.parseInt(actual)][Integer.parseInt(expected)] = count;
-                    System.out.println(actual+"/"+expected+"/"+count);
+//                    System.out.println(actual+"/"+expected+"/"+count);
                 }
             }
         }
