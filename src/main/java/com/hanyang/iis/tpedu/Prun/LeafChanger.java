@@ -53,48 +53,47 @@ public class LeafChanger {
 		boolean wasdot = false;
 		
 		while (stkn.hasMoreTokens()) {
-			String curtkn = stkn.nextToken();
-			// if sentence has ./?/! erase it
-			
-			if(wasdot){
-				wasdot = false;
-				String tmp = curtkn;
-				int number_brak = 0;
-				
-				Pattern = Pattern.substring(0,Pattern.length()-1);
-				
-				while(tmp.charAt(tmp.length()) == ')'){
-					number_brak ++;
-					tmp = tmp.substring(0, tmp.length()-1);
-				}
-				for(int i = 0;i<number_brak-1;i++){
-					Pattern += ")";
-				}
-				
-				Pattern += " ";
-				
-				continue;
-			}
-			
-			if(curtkn.equals("(.")){
-				wasdot = true;
-				continue;
-			}
-			
-			// if last char == ), then leaf
-			if (curtkn.charAt(curtkn.length() - 1) == ')') {
-				String Leafwords = curtkn;
+	         String curtkn = stkn.nextToken();
+	         // if sentence has ./?/! erase it
+	         
+	         if(wasdot){
+	            wasdot = false;
+	            String tmp = curtkn;
+	            int number_brak = 0;
+	            
+	            Pattern = Pattern.substring(0,Pattern.length()-1);
+	            
+	            while(tmp.charAt(tmp.length() - 1) == ')'){
+	               number_brak ++;
+	               tmp = tmp.substring(0, tmp.length()-1);
+	            }
+	            for(int i = 0;i<number_brak-1;i++){
+	               Pattern += ")";
+	            }
+	            
+	            Pattern += " ";
+	            
+	            continue;
+	         }
+	         
+	         if(curtkn.equals("(.")){
+	            wasdot = true;
+	            continue;
+	         }
+	         
+	         // if last char == ), then leaf
+	         if (curtkn.charAt(curtkn.length() - 1) == ')') {
+	            String Leafwords = curtkn;
 
-				while (Leafwords.charAt(Leafwords.length() - 1) == ')') {
-					Leafwords = Leafwords.substring(0, Leafwords.length() - 1);
-				}
+	            while (Leafwords.charAt(Leafwords.length() - 1) == ')') {
+	               Leafwords = Leafwords.substring(0, Leafwords.length() - 1);
+	            }
 
-				curtkn = curtkn.replace(Leafwords, ".+");
-			}
+	            curtkn = curtkn.replace(Leafwords, ".+");
+	         }
 
-			Pattern += curtkn + " ";
-		}
-
+	         Pattern += curtkn + " ";
+	      }
 		return Pattern.substring(0, Pattern.length() - 1);
 	}
 	

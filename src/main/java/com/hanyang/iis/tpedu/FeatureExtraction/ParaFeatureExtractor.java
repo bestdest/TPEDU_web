@@ -30,6 +30,7 @@ public class ParaFeatureExtractor {
 			float modifierVar_para = 0, advpVar_para = 0, adjpVar_para = 0;
 			float voca_score_avg = 0, pattern_score_avg = 0, AWL_score_avg = 0;
 			
+			para = "";
 			while(st.hasMoreElements()){
 				String sen = st.nextToken(".?!");
 				if(sen.startsWith(" ")){
@@ -41,7 +42,7 @@ public class ParaFeatureExtractor {
 				SenFeatureExtractor SFE = new SenFeatureExtractor();
 				SenFeatureDTO SenFeature = SFE.SenFeatureExtractor(numOfGrade, sen);
 				
-				para += SenFeature.getSentence();
+				para += SenFeature.getSentence()+" ";
 				cnt_advp_para += SenFeature.getCnt_advp();
 				cnt_adjp_para += SenFeature.getCnt_adjp();
 				cnt_modifier_para += SenFeature.getCnt_modifier();

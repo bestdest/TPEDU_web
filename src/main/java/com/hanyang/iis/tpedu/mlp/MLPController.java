@@ -81,7 +81,7 @@ public class MLPController {
 			 * 문장 수준의 MLP
 			 */
 			
-			float type = (float)sentence.getStruct_type()/4;
+			/*float type = (float)sentence.getStruct_type()/4;
 			float cnt_advp = (float)sentence.getCnt_advp()/15;
 			float cnt_adjp = (float)sentence.getCnt_adjp()/34;
 			float cnt_modifier = (float)sentence.getCnt_modifier()/103;
@@ -100,7 +100,28 @@ public class MLPController {
 			float numCompound = (float)sentence.getCnt_compound()/41;
 			float numGR = (float)sentence.getCnt_gr()/207;
 			float avg_dist_GR = (float)sentence.getAvg_dis_gr()/207;
-			float max_dist_GR = (float)sentence.getMax_dis_gr()/207;
+			float max_dist_GR = (float)sentence.getMax_dis_gr()/207;*/
+			
+			float type = (float)sentence.getStruct_type();
+			float cnt_advp = (float)sentence.getCnt_advp();
+			float cnt_adjp = (float)sentence.getCnt_adjp();
+			float cnt_modifier = (float)sentence.getCnt_modifier();
+			float length = (float)sentence.getLength();
+			float word = (float)sentence.getWord();
+			float numChar = (float)sentence.getAvg_char();
+			float numSyll = (float)sentence.getAvg_syllables();
+			float voca_score = (float)sentence.getVoca_score();
+			float pattern_score = (float)sentence.getPattern_score();
+			float AWL_score = (float)sentence.getRatio_awl();
+			float modifierVar = (float)sentence.getVar_modifier();
+			float advpVar = (float)sentence.getVar_adv();
+			float adjpVar = (float)sentence.getVar_adj();
+			float numCC = (float)sentence.getCnt_cc();
+			float numSBAR = (float)sentence.getCnt_sbar();
+			float numCompound = (float)sentence.getCnt_compound();
+			float numGR = (float)sentence.getCnt_gr();
+			float avg_dist_GR = (float)sentence.getAvg_dis_gr();
+			float max_dist_GR = (float)sentence.getMax_dis_gr();
 			
 			
 			MLPClassifierLinear ff = new MLPClassifierLinear(); // Multilayer Perceptron
@@ -119,7 +140,7 @@ public class MLPController {
 			 * 문단 수준
 			 */
 			
-			float type = (float)sentence.getStruct_type()/4;
+			/*float type = (float)sentence.getStruct_type()/4;
 			float cnt_advp = (float)sentence.getCnt_advp()/135;
 			float cnt_adjp = (float)sentence.getCnt_adjp()/125;
 			float cnt_modifier = (float)sentence.getCnt_modifier()/2209;
@@ -143,7 +164,32 @@ public class MLPController {
 			float TTR = (float)sentence.getTtr();
 			float CLI = (float)sentence.getCli()/(float)32.1;
 			float LIX = (float)sentence.getLix()/(float)106.3;
-			float numSen = (float)sentence.getNum_sen()/230;
+			float numSen = (float)sentence.getNum_sen()/230;*/
+			float type = (float)sentence.getStruct_type();
+			float cnt_advp = (float)sentence.getCnt_advp();
+			float cnt_adjp = (float)sentence.getCnt_adjp();
+			float cnt_modifier = (float)sentence.getCnt_modifier();
+			float length = (float)sentence.getLength();
+			float word = (float)sentence.getWord();
+			float numChar = (float)sentence.getAvg_char();
+			float numSyll = (float)sentence.getAvg_syllables();
+			float voca_score = (float)sentence.getVoca_score();
+			float pattern_score = (float)sentence.getPattern_score();
+			float AWL_score = (float)sentence.getRatio_awl();
+			float modifierVar = (float)sentence.getVar_modifier();
+			float advpVar = (float)sentence.getVar_adv();
+			float adjpVar = (float)sentence.getVar_adj();
+			float numCC = (float)sentence.getCnt_cc();
+			float numSBAR = (float)sentence.getCnt_sbar();
+			float numCompound = (float)sentence.getCnt_compound();
+			float numGR = (float)sentence.getCnt_gr();
+			float avg_dist_GR = (float)sentence.getAvg_dis_gr();
+			float max_dist_GR = (float)sentence.getMax_dis_gr();
+			
+			float TTR = (float)sentence.getTtr();
+			float CLI = (float)sentence.getCli();
+			float LIX = (float)sentence.getLix();
+			float numSen = (float)sentence.getNum_sen();
 			
 			
 			/*

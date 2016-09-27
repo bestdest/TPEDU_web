@@ -94,6 +94,12 @@ public class svm_predict_sentence {
 		int idx = 0;
 		
 		
+		if(is_paragraph == 1){
+			x[idx] = new svm_node();
+			x[idx].value = sentence.getNum_sen();
+			x[idx].index = ++idx;
+		}
+		
 		x[idx] = new svm_node();
 		x[idx].value = sentence.getStruct_type();
 		x[idx].index = ++idx;
@@ -176,10 +182,7 @@ public class svm_predict_sentence {
 		
 		
 		if(is_paragraph == 1){
-			x[idx] = new svm_node();
-			x[idx].value = sentence.getNum_sen();
-			x[idx].index = ++idx;
-
+			
 			x[idx] = new svm_node();
 			x[idx].value = sentence.getTtr();
 			x[idx].index = ++idx;
@@ -231,7 +234,7 @@ public class svm_predict_sentence {
         if(is_paragraph == 0){	//문장
         	modelfile = "D:\\Temp\\SVM\\weebit_sent_train.model"; 
         }else{					//문단
-        	modelfile = "D:\\Temp\\SVM\\TPEDU_train_para3.model"; 
+        	modelfile = "D:\\Temp\\SVM\\SVM_Para.model"; 
         }
         		
         

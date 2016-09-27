@@ -87,7 +87,7 @@ div.feature span{
                     <div>
                         <%-- <h1 class="brand-heading">${grade }</h1> --%>
                         <p class="intro-text"><h6 style="color: #fff;">입력하신 문장 : ${input_txt }</h6> </p>
-                        <p class="intro-text">입력하신 문장의 예상 등급은 </p>
+                        <p class="intro-text">입력하신 문단의 예상 등급은 </p>
                         <h1 class="brand-heading"> ${grade }</h1><p class="intro-text"> 입니다.</p>
 						<p class="intro-text"><a href="/iis/tpe/search_main.do"><img src="../resources/img/back-icon.png" alt="back" style="width:50px;"></a></p>
                     </div>

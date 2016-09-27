@@ -459,7 +459,7 @@ public class NaiveBayesianDAO {
    			list_grade4 = td.readCsvSentence(filename, 3);
    			list_grade5 = td.readCsvSentence(filename, 4);
    		}else{					//문단
-   			filename = "D:\\Temp\\TPEDU_train_para3.csv";
+   			filename = "D:\\Temp\\09\\TPEDU_train_0922_set3.csv";
    			list_grade1 = td.readCsv(filename, 0);
    			list_grade2 = td.readCsv(filename, 1);
    			list_grade3 = td.readCsv(filename, 2);
