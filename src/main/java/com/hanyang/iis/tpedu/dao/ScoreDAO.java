@@ -455,4 +455,72 @@ public class ScoreDAO {
     	  
     	  return scoreGrade;
       }
+      
+      /*PP 개수 */
+      public Score getCntPPScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getCnt_pp());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_cnt_pp(avgData);
+    	  scoreGrade.setVar_cnt_pp(varData); 
+    	  
+    	  return scoreGrade;
+      }
+      
+      /*CDEP 점수 */
+      public Score getCdepScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getCdep());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_cdep(avgData);    	
+    	  scoreGrade.setVar_cdep(varData); 
+    	  
+    	  return scoreGrade;
+      }
+      
+      /*왼쪽에서 수식하는 경우의 간격 */
+      public Score getDepLeftScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getDep_left());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_dep_left(avgData);    	
+    	  scoreGrade.setVar_dep_left(varData); 
+    	  
+    	  return scoreGrade;
+      }
+      
+      /*오른쪽에서 수식하는 경우의 간격 */
+      public Score getDepRightScore(ArrayList<Sentence> dataList, Score scoreGrade){
+    	  ArrayList<Double> dataSet = new ArrayList<Double>();
+    	  
+    	  for(int i = 0; i < dataList.size(); i++){
+    		  dataSet.add(dataList.get(i).getDep_right());
+    	  }
+    	  
+    	  Double avgData = getAvg(dataSet);
+    	  Double varData = getStdv(dataSet);
+    	  
+    	  scoreGrade.setAvg_dep_right(avgData);    	
+    	  scoreGrade.setVar_dep_right(varData); 
+    	  
+    	  return scoreGrade;
+      }
 }

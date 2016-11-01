@@ -28,6 +28,8 @@ public class ParaFeatureDTO {
 	private float TTR;
 	private float CLI;
 	private float LIX;
+	
+	private ModifierDTO modifier;
 
 	public ParaFeatureDTO(int id, String paragraph) {
 		this.id = id;
@@ -319,6 +321,14 @@ public class ParaFeatureDTO {
 
 	public void setParagraph(String paragraph) {
 		this.paragraph = paragraph;
+	}
+
+	public ModifierDTO getModifier() {
+		return modifier;
+	}
+
+	public void setModifier(ModifierDTO modifier) {
+		this.modifier = modifier;
 	}
 
 }

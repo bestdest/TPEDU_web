@@ -29,7 +29,12 @@ public class Sentence {
 	private double ttr;				//구성 성분간의 문법적 관계
 	private double cli;			//GR 간의 평균 거리
 	private double lix;			//GR 간의 최대 거리
-	
+
+	private double cnt_pp;
+	private double cdep;
+	private double dep_left;
+	private double dep_right;
+
 	private byte grade_length;
 	private byte grade_struct_type;
 	private byte grade_voca_score;
@@ -57,6 +62,11 @@ public class Sentence {
 	private byte grade_ttr;				//구성 성분간의 문법적 관계
 	private byte grade_cli;			//GR 간의 평균 거리
 	private byte grade_lix;			//GR 간의 최대 거리
+	
+	private double grade_cnt_pp;
+	private double grade_cdep;
+	private double grade_dep_left;
+	private double grade_dep_right;
 	
 	private SenFeatureDTO originScore;
 	private ParaFeatureDTO originScorePara;
@@ -374,6 +384,54 @@ public class Sentence {
 	}
 	public void setOriginScorePara(ParaFeatureDTO originScorePara) {
 		this.originScorePara = originScorePara;
+	}
+	public double getCnt_pp() {
+		return cnt_pp;
+	}
+	public void setCnt_pp(double cnt_pp) {
+		this.cnt_pp = cnt_pp;
+	}
+	public double getCdep() {
+		return cdep;
+	}
+	public void setCdep(double cdep) {
+		this.cdep = cdep;
+	}
+	public double getDep_left() {
+		return dep_left;
+	}
+	public void setDep_left(double dep_left) {
+		this.dep_left = dep_left;
+	}
+	public double getDep_right() {
+		return dep_right;
+	}
+	public void setDep_right(double dep_right) {
+		this.dep_right = dep_right;
+	}
+	public double getGrade_cnt_pp() {
+		return grade_cnt_pp;
+	}
+	public void setGrade_cnt_pp(double grade_cnt_pp) {
+		this.grade_cnt_pp = grade_cnt_pp;
+	}
+	public double getGrade_cdep() {
+		return grade_cdep;
+	}
+	public void setGrade_cdep(double grade_cdep) {
+		this.grade_cdep = grade_cdep;
+	}
+	public double getGrade_dep_left() {
+		return grade_dep_left;
+	}
+	public void setGrade_dep_left(double grade_dep_left) {
+		this.grade_dep_left = grade_dep_left;
+	}
+	public double getGrade_dep_right() {
+		return grade_dep_right;
+	}
+	public void setGrade_dep_right(double grade_dep_right) {
+		this.grade_dep_right = grade_dep_right;
 	}
 	
 	

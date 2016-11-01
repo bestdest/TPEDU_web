@@ -10,6 +10,7 @@ import com.hanyang.iis.tpedu.PretoPost.SentenParser;
 import com.hanyang.iis.tpedu.PretoPost.TargetNode;
 import com.hanyang.iis.tpedu.SentenceTBL.TypeClassifier;
 import com.hanyang.iis.tpedu.dao.SenFeatureDAO;
+import com.hanyang.iis.tpedu.dto.ModifierDTO;
 import com.hanyang.iis.tpedu.dto.SenFeatureDTO;
 
 import edu.stanford.nlp.trees.TypedDependency;
@@ -139,6 +140,9 @@ public class SenFeatureExtractor {
 			
 			HashMap<String, Integer> Counter = new HashMap<String, Integer>();
 			Counter = Counter(ParseTree);
+			
+			ModifierDTO Counters = Counters(ParseTree);
+			
 			int cnt_advp = Counter.get("cnt_advp");
 			int cnt_adjp = Counter.get("cnt_adjp");
 			int cnt_modifier = Counter.get("cnt_modifier");
@@ -159,6 +163,9 @@ public class SenFeatureExtractor {
 			SenFeatureDTO senFeature = new SenFeatureDTO(sen, ParseTree, type, cnt_advp, cnt_adjp, cnt_modifier,
 					length, word, numChar, numSyll, voca_score, pattern_score, AWL_score, modifierVar, advpVar, adjpVar, numCC,
 					numSBAR, numCompound, numGR, avg_dist_GR, max_dist_GR);
+			
+			senFeature.setModifier(Counters);
+			
 			return senFeature;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -177,6 +184,7 @@ public class SenFeatureExtractor {
 		int num_Modifier = 0;
 		int num_ADJP = 0;
 		int num_ADVP = 0;
+		
 
 		while (stkn.hasMoreTokens()) {
 			String curtkn = stkn.nextToken();
@@ -197,12 +205,87 @@ public class SenFeatureExtractor {
 				num_ADVP++;
 			}
 		}
+		
 		counter.put("numSBAR", num_SBAR);
 		counter.put("numCC", num_CC);
 		counter.put("cnt_modifier", num_Modifier);
 		counter.put("cnt_adjp", num_ADJP);
 		counter.put("cnt_advp", num_ADVP);
 		return counter;
+	}
+	
+	/*수식어 개수 세기*/
+	public static ModifierDTO Counters(String ParseTree) {
+		HashMap<String, Integer> counter = new HashMap<String, Integer>();
+		StringTokenizer stkn = new StringTokenizer(ParseTree.replace("(", "").replace(")", ""));
+		
+		ModifierDTO mod = new ModifierDTO();
+		
+		while (stkn.hasMoreTokens()) {
+			String curtkn = stkn.nextToken();
+			
+			switch(curtkn.replace("(", "").replace(")", "")){
+			case "SBAR":
+				mod.setSbar_count(mod.getSbar_count() + 1);
+				break;
+			case "CC":
+				mod.setCc_count(mod.getCc_count() + 1);
+				break;
+			case "RBS":
+				mod.setRbs_count(mod.getRbs_count() + 1);
+				break;
+			case "RBR":
+				mod.setRbr_count(mod.getRbr_count() + 1);
+				break;
+			case "RB":
+				mod.setRb_count(mod.getRb_count() + 1);
+				break;
+			case "JJS":
+				mod.setJjs_count(mod.getJjs_count() + 1);
+				break;
+			case "JJ":
+				mod.setJj_count(mod.getJj_count() + 1);
+				break;
+			case "WP":
+				mod.setWp_count(mod.getWp_count() + 1);
+				break;
+			case "WP$":
+				mod.setWp$_count(mod.getWp$_count() + 1);
+				break;
+			case "PRP$":
+				mod.setPrp$_count(mod.getPrp$_count() + 1);
+				break;
+			case "VBN":
+				mod.setVbn_count(mod.getVbn_count() + 1);
+				break;
+			case "VBG":
+				mod.setVbg_count(mod.getVbg_count() + 1);
+				break;
+			case "TO":
+				mod.setTo_count(mod.getTo_count() + 1);
+				break;
+			case "IN":
+				mod.setIn_count(mod.getIn_count() + 1);
+				break;
+			case "DT":
+				mod.setDt_count(mod.getDt_count() + 1);
+				break;
+			case "WDT":
+				mod.setWdt_count(mod.getWdt_count() + 1);
+				break;
+			case "CD":
+				mod.setCd_count(mod.getCd_count() + 1);
+				break;
+			case "ADJP":
+				mod.setAdjp_count(mod.getAdjp_count() + 1);
+				break;
+			case "ADVP":
+				mod.setAdvp_count(mod.getAdvp_count() + 1);
+				break;
+			}
+		}
+		
+		return mod;
 	}
 
 	public static HashMap<String, Float> GR_Finder(List<TypedDependency> GR) {

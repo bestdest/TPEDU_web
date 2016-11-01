@@ -194,22 +194,6 @@ public class TrainingDataSelect {
     	if (Double.isNaN(d)){d = 1.0;}
     	return d;
     }
-    /*public Double calculation2(double avg, double stdev, double e2){
-    	Double d = 0.0;
-    	//d =  Math.pow(1 / Math.sqrt(2 * Math.PI * f), Math.E(- Math.pow((value - e),2) / 2 * f));
-    	
-    	//System.out.println(d1 + "   :   " + 1 / Math.sqrt(2 * Math.PI * f) );
-    	Double d1 = Math.pow(Math.E, (- Math.pow((e2 - avg),2) / 2 * stdev));
-    	d1 = Math.exp(-(Math.pow((e2 - avg), 2) / (2 * Math.pow(stdev, 2))));		
-    	
-    	
-    	//d =  1 / Math.sqrt(2 * Math.PI * stdev) * Math.exp((- Math.pow((e2 - avg),2) / 2 * stdev));
-    	//d = (1 / (Math.sqrt(2 * Math.PI) * stdev)) * Math.exp(-(Math.pow(e2 - avg, 2) / 2 * Math.pow(stdev, 2)));
-    	d = (1 / (Math.sqrt(2 * Math.PI) * Math.pow(stdev,2))) * d1;
-    	
-    	return d;
-    }*/
-    
 
 
     public ArrayList<Sentence> readCsv(String filename, int grade) {
@@ -252,6 +236,11 @@ public class TrainingDataSelect {
 					sentence.setTtr(Double.parseDouble(s[++i]));
 					sentence.setCli(Double.parseDouble(s[++i]));
 					sentence.setLix(Double.parseDouble(s[++i]));
+
+					sentence.setCnt_pp(Double.parseDouble(s[++i]));
+					sentence.setCdep(Double.parseDouble(s[++i]));
+					sentence.setDep_left(Double.parseDouble(s[++i]));
+					sentence.setDep_right(Double.parseDouble(s[++i]));
 					data.add(sentence);
 				}
 			}
@@ -298,7 +287,11 @@ public class TrainingDataSelect {
     				sentence.setCnt_gr(Double.parseDouble(s[++i]));
     				sentence.setAvg_dis_gr(Double.parseDouble(s[++i]));
     				sentence.setMax_dis_gr(Double.parseDouble(s[++i]));
-    				
+
+					/*sentence.setCnt_pp(Double.parseDouble(s[++i]));
+					sentence.setCdep(Double.parseDouble(s[++i]));
+					sentence.setDep_left(Double.parseDouble(s[++i]));
+					sentence.setDep_right(Double.parseDouble(s[++i]));*/
     				data.add(sentence);
     			}
     		}

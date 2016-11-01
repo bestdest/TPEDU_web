@@ -27,15 +27,7 @@ public class SenFeatureDTO {
 	private float avg_dist_GR;
 	private float max_dist_GR;
 
-	public SenFeatureDTO(int id, String sentence) {
-		this.id = id;
-		this.sentence = sentence;
-	}
-	
-	public SenFeatureDTO(int id, float pattern_score) {
-		this.id = id;
-		this.pattern_score = pattern_score;
-	}
+	private ModifierDTO modifier;
 
 	public SenFeatureDTO(int id, String sentence, String pattern, int type, int cnt_advp, int cnt_adjp,
 			int cnt_modifier, int length, int word, float numChar, float numSyll, float voca_score, float AWL_score,
@@ -325,6 +317,31 @@ public class SenFeatureDTO {
 
 	public void setMax_dist_GR(float max_dist_GR) {
 		this.max_dist_GR = max_dist_GR;
+	}
+	public ModifierDTO getModifier() {
+		return modifier;
+	}
+
+	public void setModifier(ModifierDTO modifier) {
+		this.modifier = modifier;
+	}
+
+	public void setNumCompound(float numCompound) {
+		this.numCompound = numCompound;
+	}
+
+	public void setNumGR(float numGR) {
+		this.numGR = numGR;
+	}
+
+	public SenFeatureDTO(int id, String sentence) {
+		this.id = id;
+		this.sentence = sentence;
+	}
+	
+	public SenFeatureDTO(int id, float pattern_score) {
+		this.id = id;
+		this.pattern_score = pattern_score;
 	}
 
 }

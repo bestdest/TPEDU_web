@@ -39,7 +39,7 @@ public class FeatureController {
 	    sentence.setTtr((double)PDTO.getTTR());
 	    sentence.setCli((double)PDTO.getCLI()/(float)32.1);
 		sentence.setLix((double)PDTO.getLIX()/(float)87.6);
-		sentence.setNum_sen(PDTO.getNumSen()/230);
+		sentence.setNum_sen((double)PDTO.getNumSen()/230);
 		sentence.setOriginScorePara(PDTO);
 		
 		return sentence;

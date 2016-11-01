@@ -27,17 +27,17 @@ public class NaiveBayesianDAO {
    
 
     /*가우시안 등급 계산*/
-    public void gaussianCal(ArrayList<Sentence> testList, ArrayList<Score> gradeScore, int grade_count, int is_para){
+    /*public void gaussianCal(ArrayList<Sentence> testList, ArrayList<Score> gradeScore, int grade_count, int is_para){
 		int isFail = 0;
 		int isSuccess = 0;
 		int isTotalGrade[] = new int[grade_count];
     	int isTruegrade[] = new int[grade_count];
     	int isEachGradeCount[][] = new int[grade_count][grade_count];
     	
-    	/* testList 값 꺼내서 체크 */
+    	 testList 값 꺼내서 체크 
     	for(int i = 0; i < testList.size(); i++){
     		
-    		/* Grade 값 계산 */
+    		 Grade 값 계산 
     		Double[] grade = new Double[grade_count];
     		for(int j = 0; j < gradeScore.size(); j++){
     			grade[j] = getCal(gradeScore.get(j), testList.get(i), is_para);
@@ -45,7 +45,7 @@ public class NaiveBayesianDAO {
     		int orgin_grade = testList.get(i).getGrade();
     		int classification = 0;
     		
-    		/* Grade 최대값 구하기 */
+    		 Grade 최대값 구하기 
     		Double temp = 0.0;
     		for(int j = 0; j < grade.length; j++) {
     			if(grade[j] > temp ){
@@ -67,7 +67,7 @@ public class NaiveBayesianDAO {
     		}
     	}
 
-    	/* 각 등급별 분류 개수 */
+    	 각 등급별 분류 개수 
     	for(int k = 0; k < isEachGradeCount.length; k++){
     		System.out.print(" " + (k+1) + "등급 grade1" + " :  " + isEachGradeCount[k][0]);
     		for(int kk = 1; kk < grade_count; kk++){
@@ -79,7 +79,7 @@ public class NaiveBayesianDAO {
     	int index = 0;
     	Double re = 0.0;
     	float tempre = 0;
-    	/* 전체 성공 실패 계산 값 */
+    	 전체 성공 실패 계산 값 
     	for (int total : isTotalGrade) {
     		int succ = isTruegrade[index];
     		tempre = (float) (succ*1.0 / total*1.0);
@@ -88,7 +88,7 @@ public class NaiveBayesianDAO {
     	}
     	
     	System.out.println("성공횟수 : " + isSuccess + "  실패횟수 : " + isFail + "  Accurancy : " + isSuccess*1.0/(isFail + isSuccess)*1.0 + "  Precision : " + re/grade_count);
-    }
+    }*/
     
     /*가우시안 문장 별 등급 분류 (가장 큰 값 구하기)*/
     public int gaussianCal(Sentence sentence, ArrayList<Score> gradeScore, int grade_count, int is_para){
@@ -115,7 +115,7 @@ public class NaiveBayesianDAO {
     }
     
     
-    /*각 항목별 등급 분류 */
+    /*각 항목별 등급 분류 (근데 밖에 나오는것만  등급내면되서 다할 필요 없음.) */
     public Sentence gaussianEachFeatureCal(Sentence sentence, ArrayList<Score> gradeScore, int grade_count){
 
     	ArrayList<Double[]> length = new ArrayList<Double[]>();
@@ -301,13 +301,18 @@ public class NaiveBayesianDAO {
     	Double ttr = td.calculation(gradeScore.getAvg_ttr(), gradeScore.getVar_ttr(), sentence.getTtr());
     	Double cli = td.calculation(gradeScore.getAvg_cli(), gradeScore.getVar_cli(), sentence.getCli());
     	Double lix = td.calculation(gradeScore.getAvg_lix(), gradeScore.getVar_lix(), sentence.getLix());
+
+    	Double cnt_pp = td.calculation(gradeScore.getAvg_cnt_pp(), gradeScore.getVar_cnt_pp(), sentence.getCnt_pp());
+    	Double cdep = td.calculation(gradeScore.getAvg_cdep(), gradeScore.getVar_cdep(), sentence.getCdep());
+    	Double dep_left = td.calculation(gradeScore.getAvg_dep_left(), gradeScore.getVar_dep_left(), sentence.getDep_left());
+    	Double dep_right = td.calculation(gradeScore.getAvg_dep_right(), gradeScore.getVar_dep_right(), sentence.getDep_right());
     	
     	Double result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var *
     	avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr;
     	
     	if(is_paragraph == 1){
     		result = length_var * voca_var * pattern_var * word_var * adjp_var * advp_var * struct_var *
-    				avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr * num_sen * ttr * cli * lix;
+    				avg_char * syllable * cnt_modifier * awl * variation_modifier * variation_adv * variation_adj * cc * sbar * compound * cnt_gr * avg_gr * max_gr * num_sen * ttr * cli * lix * cnt_pp * cdep * dep_left * dep_right;
     		
     	}
     	return result;
@@ -343,6 +348,11 @@ public class NaiveBayesianDAO {
     	scoreGrade = sc.getTTRScore(list_grade, scoreGrade);
     	scoreGrade = sc.getCLIScore(list_grade, scoreGrade);
     	scoreGrade = sc.getLIXScore(list_grade, scoreGrade);
+    	
+    	scoreGrade = sc.getCntPPScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getCdepScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getDepLeftScore(list_grade, scoreGrade);
+    	scoreGrade = sc.getDepRightScore(list_grade, scoreGrade);
     	
     	return scoreGrade;
     }
@@ -459,7 +469,7 @@ public class NaiveBayesianDAO {
    			list_grade4 = td.readCsvSentence(filename, 3);
    			list_grade5 = td.readCsvSentence(filename, 4);
    		}else{					//문단
-   			filename = "D:\\Temp\\09\\TPEDU_train_0922_set3.csv";
+   			filename = "D:\\Temp\\1021\\TPEDU_train_set3.csv";
    			list_grade1 = td.readCsv(filename, 0);
    			list_grade2 = td.readCsv(filename, 1);
    			list_grade3 = td.readCsv(filename, 2);
@@ -500,7 +510,7 @@ public class NaiveBayesianDAO {
    	}
    	
 
-    public ArrayList<Score> paragraphReadData(String filename) {
+    /*public ArrayList<Score> paragraphReadData(String filename) {
     	ArrayList<Score> scoreGrade = new ArrayList<Score>();
 		try {
 			// CSVReader reader = new CSVReader(new FileReader(filename), '\t');
@@ -563,7 +573,15 @@ public class NaiveBayesianDAO {
 				data.setVar_ttr(Double.parseDouble(split[++i]));
 				data.setVar_cli(Double.parseDouble(split[++i]));
 				data.setVar_lix(Double.parseDouble(split[++i]));
-				
+
+				data.setAvg_cnt_pp(Double.parseDouble(split[++i]));
+				data.setVar_cnt_pp(Double.parseDouble(split[++i]));
+				data.setAvg_cdep(Double.parseDouble(split[++i]));
+				data.setVar_cdep(Double.parseDouble(split[++i]));
+				data.setAvg_dep_left(Double.parseDouble(split[++i]));
+				data.setVar_dep_left(Double.parseDouble(split[++i]));
+				data.setAvg_dep_right(Double.parseDouble(split[++i]));
+				data.setVar_dep_right(Double.parseDouble(split[++i]));
 				scoreGrade.add(data);
 			}
 		} catch (FileNotFoundException e) {
@@ -645,6 +663,6 @@ public class NaiveBayesianDAO {
     		e.printStackTrace();
     	}
     	return scoreGrade;
-    }
+    }*/
 
 }

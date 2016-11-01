@@ -51,6 +51,15 @@ public class Score {
 	private Double var_cli = null;
 	private Double avg_lix = null;
 	private Double var_lix = null;
+
+	private Double avg_cnt_pp = null;
+	private Double var_cnt_pp = null;
+	private Double avg_cdep = null;
+	private Double var_cdep = null;
+	private Double avg_dep_left = null;
+	private Double var_dep_left = null;
+	private Double avg_dep_right = null;
+	private Double var_dep_right = null;
 	
 	public Double getAvg_length() {
 		return avg_length;
@@ -339,6 +348,54 @@ public class Score {
 	}
 	public void setVar_lix(Double var_lix) {
 		this.var_lix = var_lix;
+	}
+	public Double getAvg_cnt_pp() {
+		return avg_cnt_pp;
+	}
+	public void setAvg_cnt_pp(Double avg_cnt_pp) {
+		this.avg_cnt_pp = avg_cnt_pp;
+	}
+	public Double getVar_cnt_pp() {
+		return var_cnt_pp;
+	}
+	public void setVar_cnt_pp(Double var_cnt_pp) {
+		this.var_cnt_pp = var_cnt_pp;
+	}
+	public Double getAvg_cdep() {
+		return avg_cdep;
+	}
+	public void setAvg_cdep(Double avg_cdep) {
+		this.avg_cdep = avg_cdep;
+	}
+	public Double getVar_cdep() {
+		return var_cdep;
+	}
+	public void setVar_cdep(Double var_cdep) {
+		this.var_cdep = var_cdep;
+	}
+	public Double getAvg_dep_left() {
+		return avg_dep_left;
+	}
+	public void setAvg_dep_left(Double avg_dep_left) {
+		this.avg_dep_left = avg_dep_left;
+	}
+	public Double getVar_dep_left() {
+		return var_dep_left;
+	}
+	public void setVar_dep_left(Double var_dep_left) {
+		this.var_dep_left = var_dep_left;
+	}
+	public Double getAvg_dep_right() {
+		return avg_dep_right;
+	}
+	public void setAvg_dep_right(Double avg_dep_right) {
+		this.avg_dep_right = avg_dep_right;
+	}
+	public Double getVar_dep_right() {
+		return var_dep_right;
+	}
+	public void setVar_dep_right(Double var_dep_right) {
+		this.var_dep_right = var_dep_right;
 	}
 	
 }

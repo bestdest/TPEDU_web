@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.hanyang.iis.tpedu.dao.ParaFeatureDAO;
+import com.hanyang.iis.tpedu.dto.ModifierDTO;
 import com.hanyang.iis.tpedu.dto.ParaFeatureDTO;
 import com.mysql.jdbc.Connection;
 import com.hanyang.iis.tpedu.dao.SenFeatureDAO;
@@ -29,6 +30,7 @@ public class ParaFeatureExtractor {
 			float voca_score_para = 0, pattern_score_para = 0, AWL_score_para = 0;
 			float modifierVar_para = 0, advpVar_para = 0, adjpVar_para = 0;
 			float voca_score_avg = 0, pattern_score_avg = 0, AWL_score_avg = 0;
+			ModifierDTO modifier = new ModifierDTO();
 			
 			para = "";
 			while(st.hasMoreElements()){
@@ -64,6 +66,27 @@ public class ParaFeatureExtractor {
 				voca_score_para += SenFeature.getVoca_score();
 				pattern_score_para += SenFeature.getPattern_score();
 				AWL_score_para += SenFeature.getAWL_score();
+				
+				modifier.setCc_count(modifier.getCc_count() + SenFeature.getModifier().getCc_count());
+				modifier.setCd_count(modifier.getCd_count() + SenFeature.getModifier().getCd_count());
+				modifier.setAdjp_count(modifier.getAdjp_count() + SenFeature.getModifier().getAdjp_count());
+				modifier.setAdvp_count(modifier.getAdvp_count() + SenFeature.getModifier().getAdvp_count());
+				modifier.setDt_count(modifier.getDt_count() + SenFeature.getModifier().getDt_count());
+				modifier.setIn_count(modifier.getIn_count() + SenFeature.getModifier().getIn_count());
+				modifier.setJj_count(modifier.getJj_count() + SenFeature.getModifier().getJj_count());
+				modifier.setJjr_count(modifier.getJjr_count() + SenFeature.getModifier().getJjr_count());
+				modifier.setJjs_count(modifier.getJjs_count() + SenFeature.getModifier().getJjs_count());
+				modifier.setPrp$_count(modifier.getPrp$_count() + SenFeature.getModifier().getPrp$_count());
+				modifier.setRb_count(modifier.getRb_count() + SenFeature.getModifier().getRb_count());
+				modifier.setRbr_count(modifier.getRbr_count() + SenFeature.getModifier().getRbr_count());
+				modifier.setRbs_count(modifier.getRbs_count() + SenFeature.getModifier().getRbs_count());
+				modifier.setSbar_count(modifier.getSbar_count() + SenFeature.getModifier().getSbar_count());
+				modifier.setTo_count(modifier.getTo_count() + SenFeature.getModifier().getTo_count());
+				modifier.setVbg_count(modifier.getVbg_count() + SenFeature.getModifier().getVbg_count());
+				modifier.setVbn_count(modifier.getVbn_count() + SenFeature.getModifier().getVbn_count());
+				modifier.setWp$_count(modifier.getWp$_count() + SenFeature.getModifier().getWp$_count());
+				modifier.setWp_count(modifier.getWp_count() + SenFeature.getModifier().getWp_count());
+				modifier.setWdt_count(modifier.getWdt_count() + SenFeature.getModifier().getWdt_count());
 				sen_count++;
 			}
 			
@@ -88,6 +111,8 @@ public class ParaFeatureExtractor {
 					pattern_score_avg, AWL_score_para, modifierVar_para, advpVar_para, adjpVar_para, numCC_para,
 					numSBAR_para, numCompound_para, numGR_para, avg_dist_GR_para, max_dist_GR_para, sen_count, TTR,
 					CLI, LIX);
+			
+			PDTO.setModifier(modifier);
 			
 			return PDTO;
 		}catch(Exception e){

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -180,11 +181,21 @@ div.feature span{
 				<div class="feature"> * 전체 단어 개수 : ${sentence_origin.word }개 	<br></div>
 				<div class="feature"> 
 					* 수식어 전체 개수 (전체 : ${sentence_origin.cnt_modifier }개)<br> 
-					<span> - 수식어1 : 10 개<br>	</span> 
-					<span> - 수식어2 : 10 개<br>	</span> 
-					<span> - 수식어3 : 10 개<br>	</span> 
-					<span> - 수식어4 : 8 개<br>	</span> 
-					<span> - 수식어5 : 10 개<br>	</span> 
+					<c:if test="${sentence_modifier.modifier0 ne 0 }">
+					<span> - ${sentence_modifier.modifier_sen0 } : ${sentence_modifier.modifier0 } 개<br>	</span> 
+					</c:if>
+					<c:if test="${sentence_modifier.modifier1 ne 0 }">
+					<span> - ${sentence_modifier.modifier_sen1 } : ${sentence_modifier.modifier1 } 개<br>	</span> 
+					</c:if>
+					<c:if test="${sentence_modifier.modifier2 ne 0 }">
+					<span> - ${sentence_modifier.modifier_sen2 } : ${sentence_modifier.modifier2 } 개<br>	</span> 
+					</c:if>
+					<c:if test="${sentence_modifier.modifier3 ne 0 }">
+					<span> - ${sentence_modifier.modifier_sen3 } : ${sentence_modifier.modifier3 } 개<br>	</span> 
+					</c:if>
+					<c:if test="${sentence_modifier.modifier4 ne 0 }">
+					<span> - ${sentence_modifier.modifier_sen4 } : ${sentence_modifier.modifier4 } 개<br>	</span> 
+					</c:if>
 				</div>
 				
 				<div class="feature"> 

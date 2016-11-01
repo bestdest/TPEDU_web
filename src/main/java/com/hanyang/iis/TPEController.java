@@ -3,8 +3,14 @@ package com.hanyang.iis;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.hanyang.iis.tpedu.TPEMatch.main_Pattern_Matcher;
 import com.hanyang.iis.tpedu.dao.NaiveBayesianDAO;
 import com.hanyang.iis.tpedu.dao.TPEDAO;
+import com.hanyang.iis.tpedu.dto.ModifierDTO;
 import com.hanyang.iis.tpedu.dto.Sentence;
 import com.hanyang.iis.tpedu.mlp.MLPController;
 import com.hanyang.iis.utils.WordScoreCrawler;
@@ -66,11 +73,11 @@ public class TPEController {
 		formattedDate = dateFormat.format(date);
 		
 		if(is_sentence.equals("1")){	//문장
-			searchSentence(search_txt, model);
+			searchSentence(search_txt.toLowerCase(), model);
 			System.out.println("결과나온시간 : " + formattedDate);
 			return "/result_sen";
 		}else{							//문단
-			searchParagraph(search_txt, model);
+			searchParagraph(search_txt.toLowerCase(), model);
 			System.out.println("결과나온시간 : " + formattedDate);
 			
 			return "/result";
@@ -179,6 +186,10 @@ public class TPEController {
 		model.addAttribute("sentence_feature5", Sentence.getGrade_avg_syllables()+1);
 		model.addAttribute("sentence_feature6", Sentence.getGrade_avg_char()+1);
 		
+		HashMap<String, String> mod_map = new HashMap<String, String>();
+		mod_map = getTopModifier(Sentence.getOriginScore().getModifier());
+		model.addAttribute("sentence_modifier", mod_map);
+		
 		model.addAttribute("sentence_feature1_str", "단어점수");
 		model.addAttribute("sentence_feature2_str", "패턴복잡도");
 		model.addAttribute("sentence_feature3_str", "수식어수");
@@ -282,6 +293,10 @@ public class TPEController {
 		model.addAttribute("sentence_feature4", Sentence.getGrade_struct_type()+1);
 		model.addAttribute("sentence_feature5", Sentence.getGrade_ttr()+1);
 		model.addAttribute("sentence_feature6", Sentence.getGrade_cli()+1);
+
+		HashMap<String, String> mod_map = new HashMap<String, String>();
+		mod_map = getTopModifier(Sentence.getOriginScorePara().getModifier());
+		model.addAttribute("sentence_modifier", mod_map);
 		
 		model.addAttribute("sentence_feature1_str", "단어점수");
 		model.addAttribute("sentence_feature2_str", "패턴복잡도");
@@ -309,123 +324,67 @@ public class TPEController {
 		return re;
 		
 	}
-	/*public Sentence getFeatureScore(String sentence){
-		int sentence_count = 3;
-		Sentence re = new Sentence();
-		ArrayList<Sentence> datas = new ArrayList<Sentence>(); 
-		
-		String tblName = "tbl_sentence_lists"; // TPE Matching 시킬 테이블 이름.
-		WordScoreCrawler wsc = new WordScoreCrawler();
-		main_Pattern_Matcher pm = new main_Pattern_Matcher();
-		StringTokenizer stkn = null;
-		
-		 여러 문장인 경우 
-		//String[] split_sentence = sentence.split(".");
-		stkn = new StringTokenizer(sentence.toString(), ".");
-		//token 구분된 문장 loop
-		while (stkn.hasMoreTokens()) {
-			String split_sentence = stkn.nextToken();
-			Sentence st = new Sentence();
-			
-			 * Pattern Score 추출하는 부분
-			 
-			st = pm.Pattern_Matcher(split_sentence, numOfGrade, tblName);
-			
-			 * Word Score 추출하는 부분
-			 
-			Double vocaScore = wsc.vocaScore(split_sentence);
-			st.setVoca_score(vocaScore/40.80);
-			
-			datas.add(st);
-		}
-		
-		double leng_var = 0.0;
-		double adjp_var = 0.0;
-		double advp_var = 0.0;
-		double pattern_var = 0.0;
-		double struct_var = 0.0;
-		double word_var = 0.0;
-		double voca_var = 0.0;
-		
-		double avg_char = 0.0;
-    	double syllable = 0.0;
-    	double cnt_modifier = 0.0;
-    	double awl = 0.0;
-    	double variation_modifier = 0.0; 
-    	double variation_adv = 0.0;
-    	double variation_adj = 0.0;
-    	double cc = 0.0;
-    	double sbar = 0.0;
-    	double compound = 0.0;
-    	double cnt_gr = 0.0;
-    	double avg_gr = 0.0;
-    	double max_gr = 0.0;
-
-    	double num_sen = 0.0;
-    	double ttr = 0.0;
-    	double cli = 0.0;
-    	double lix = 0.0;
+	
+	/*TOP 5의 수식어 추출하기*/
+	public HashMap<String, String> getTopModifier(ModifierDTO mod){
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		HashMap<String, String> result_map = new HashMap<String, String>();
+		//map.put("adjp", mod.getAdjp_count());
+		//map.put("advp", mod.getAdvp_count());
+		//map.put("cc", mod.getCc_count());
+		map.put("기수", mod.getCd_count());					//cd
+		map.put("한정사", mod.getDt_count());				//dt
+		map.put("전치사 또는 종속접속사", mod.getIn_count());	//in
+		map.put("형용사", mod.getJj_count());				//jj
+		map.put("형용사(비교급)", mod.getJjr_count());		//jjr
+		map.put("형용사(최상급)", mod.getJjs_count());		//jjs
+		map.put("소유대명사", mod.getPrp$_count());			//prp$
+		map.put("부사", mod.getRb_count());					//rb
+		map.put("부사(비교급)", mod.getRbr_count());		//rbr
+		map.put("부사(최상급)", mod.getRbs_count());		//rbs
+		//map.put("sbar", mod.getSbar_count());
+		map.put("전치사TO", mod.getTo_count());				//to
+		map.put("동명사(현재분사)", mod.getVbg_count());	//vbg
+		map.put("과거분사", mod.getVbn_count());			//vbn
+		map.put("소유격대명사(wh-)", mod.getWp$_count());		//wp$
+		map.put("관계대명사(wh-)", mod.getWp_count());			//wp
+		map.put("한정사(wh-)", mod.getWp_count());			//wdt
 		
 		
-		for(Sentence data : datas){
-			leng_var =+ data.getLength();
-			adjp_var =+ data.getCnt_adjp();
-			advp_var =+ data.getCnt_advp();
-			pattern_var =+ data.getPattern_score();
-			struct_var =+ data.getStruct_type();
-			word_var =+ data.getWord();
-			voca_var =+ data.getVoca_score();
-			
-			avg_char = data.getAvg_char();
-	    	syllable = data.getAvg_syllables();
-	    	cnt_modifier = data.getCnt_modifier();
-	    	awl = data.getRatio_awl();
-	    	variation_modifier = data.getVar_modifier(); 
-	    	variation_adv = data.getVar_adv();
-	    	variation_adj = data.getVar_adj();
-	    	cc = data.getCnt_cc();
-	    	sbar = data.getCnt_sbar();
-	    	compound = data.getCnt_compound();
-	    	cnt_gr = data.getCnt_gr();
-	    	avg_gr = data.getAvg_dis_gr();
-	    	max_gr = data.getMax_dis_gr();
-
-	    	num_sen = data.getNum_sen();
-	    	ttr = data.getTtr();
-	    	cli = data.getCli();
-	    	lix = data.getLix();
-		}
+		Iterator it = TPEController.sortByValue(map).iterator();
+		int i = 0;
+		while(it.hasNext() && i < 5){
+            String temp = (String) it.next();
+            System.out.println(temp + " = " + map.get(temp));
+            if(map.get(temp) != 0){
+            	result_map.put("modifier_sen"+i, temp);
+            	result_map.put("modifier"+i, map.get(temp)+"");
+            }else{
+            	result_map.put("modifier"+i, "0");
+            }
+            i++;
+        }
 		
-		문단의 문장 갯수를 각 변수의 합에 나눠서 평균 구하기
-		sentence_count = datas.size();
-		re.setLength(leng_var/sentence_count);
-		re.setCnt_advp(advp_var/sentence_count);
-		re.setCnt_adjp(adjp_var/sentence_count);
-		re.setPattern_score(pattern_var/sentence_count);
-		re.setStruct_type(struct_var/sentence_count);
-		re.setWord(word_var/sentence_count);
-		re.setVoca_score(voca_var/sentence_count);
-
-		re.setAvg_char(avg_char/sentence_count);
-		re.setAvg_syllables(syllable/sentence_count);
-		re.setCnt_modifier(cnt_modifier/sentence_count);
-		re.setRatio_awl(awl/sentence_count);
-		re.setVar_modifier(variation_modifier/sentence_count);
-		re.setVar_adv(variation_adv/sentence_count);
-		re.setVar_adj(variation_adj/sentence_count);
+		return result_map;
 		
-		re.setCnt_cc(cc/sentence_count);
-		re.setCnt_sbar(sbar/sentence_count);
-		re.setCnt_compound(compound/sentence_count);
-		re.setCnt_gr(cnt_gr/sentence_count);
-		re.setAvg_dis_gr(avg_gr/sentence_count);
-		re.setMax_dis_gr(max_gr/sentence_count);
-
-		re.setNum_sen(num_sen/sentence_count);
-		re.setTtr(ttr/sentence_count);
-		re.setCli(cli/sentence_count);
-		re.setLix(lix/sentence_count);
-		
-		return re; 
-	}*/
+	}
+	
+	public static List sortByValue(final Map map){
+        List<String> list = new ArrayList();
+        list.addAll(map.keySet());
+         
+        Collections.sort(list,new Comparator(){
+             
+            public int compare(Object o1,Object o2){
+                Object v1 = map.get(o1);
+                Object v2 = map.get(o2);
+                 
+                return ((Comparable) v1).compareTo(v2);
+            }
+             
+        });
+        Collections.reverse(list); // 주석시 오름차순
+        return list;
+    }
+	
 }
